@@ -338,7 +338,7 @@ add_action('admin_menu', function() {
 - Первый релиз
 - Session-based аутентификация (bcrypt + HTTP-only cookie)
 - SSO через cookie на `.markbase.ru`
-- Super admin `support@markbase.ru` создаётся при старте
+- SSO cookie на домене `.markbase.ru` (все поддомены)
 - CORS для `*.markbase.ru`
 - Brute-force protection (10 попыток / 30 мин)
 - Интеграция: JS, Python, PHP, WordPress
