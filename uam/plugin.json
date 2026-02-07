@@ -1,0 +1,32 @@
+{
+  "name": "MarkBase UAM (WaySenID)",
+  "slug": "uam",
+  "version": "1.0.0",
+  "description": "Единая аутентификация через WaySenID. SSO для всех модулей и сторонних проектов.",
+  "author": "MarkBase",
+  "license": "MIT",
+  "homepage": "https://auth.markbase.ru",
+  "api_base": "https://auth.markbase.ru/api/uam/v1",
+  "port": 8060,
+  "category": "authentication",
+  "requires": [],
+  "provides": ["authentication", "session", "sso"],
+  "endpoints": {
+    "login": "POST /api/uam/v1/login",
+    "register": "POST /api/uam/v1/register",
+    "logout": "POST /api/uam/v1/logout",
+    "me": "GET /api/uam/v1/me",
+    "session_validate": "GET /api/uam/v1/session/validate",
+    "health": "GET /health"
+  },
+  "config": {
+    "UAM_URL": "https://auth.markbase.ru",
+    "UAM_SESSION_COOKIE": "uam_session",
+    "UAM_COOKIE_DOMAIN": ".markbase.ru",
+    "UAM_SESSION_TTL_HOURS": 72
+  },
+  "compatibility": {
+    "platforms": ["javascript", "python", "php", "wordpress", "any"],
+    "min_version": "1.0.0"
+  }
+}

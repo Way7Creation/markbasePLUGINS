@@ -1,0 +1,29 @@
+{
+  "name": "MarkBase Security",
+  "slug": "security",
+  "version": "1.0.0",
+  "description": "Rate limiting, IP allowlist/denylist, audit log для всех модулей.",
+  "author": "MarkBase",
+  "license": "MIT",
+  "homepage": "https://security.markbase.ru",
+  "api_base": "https://security.markbase.ru/api/security/v1",
+  "port": 8061,
+  "category": "security",
+  "requires": ["uam", "registry"],
+  "provides": ["rate_limiting", "ip_filter", "audit_log"],
+  "endpoints": {
+    "ratelimit_check": "POST /api/security/v1/ratelimit/check",
+    "iplist": "GET /api/security/v1/iplist",
+    "iplist_check": "GET /api/security/v1/iplist/check",
+    "audit": "GET /api/security/v1/audit",
+    "audit_write": "POST /api/security/v1/audit",
+    "health": "GET /api/security/v1/health"
+  },
+  "config": {
+    "SECURITY_URL": "https://security.markbase.ru"
+  },
+  "compatibility": {
+    "platforms": ["javascript", "python", "php", "wordpress", "any"],
+    "min_version": "1.0.0"
+  }
+}

@@ -1,0 +1,43 @@
+# MarkBase CORE — Plugins
+
+Официальные плагины для интеграции модулей MarkBase в ваши проекты.
+
+## Модули
+
+| Plugin | Версия | Slug | Описание |
+|--------|--------|------|----------|
+| [UAM (WaySenID)](./uam/) | 1.0.0 | `uam` | Единая аутентификация, SSO, сессии |
+| [Registry](./registry/) | 1.0.0 | `registry` | Каталог модулей, API-ключи, HMAC |
+| [Security](./security/) | 1.0.0 | `security` | Rate limiting, IP-фильтрация, аудит |
+| [Monitoring](./monitoring/) | 1.0.0 | `monitoring` | Health checks, метрики, алерты |
+| [Billing](./billing/) | 1.0.0 | `billing` | Тарифы, подписки, лимиты |
+| [Wallet](./wallet/) | 1.0.0 | `wallet` | Балансы, транзакции, платежи |
+
+## Принципы
+
+1. **Единый вход** — все модули используют UAM (WaySenID) для аутентификации
+2. **Cookie-based SSO** — `uam_session` на домене `.markbase.ru`
+3. **HMAC-подпись** — межмодульные запросы подписываются HMAC-SHA256
+4. **API Namespace** — `/api/<slug>/v1/*`
+5. **Версионирование** — семантическое (major.minor.patch)
+
+## Быстрый старт
+
+```bash
+# 1. Получите API-ключ через Registry
+curl -X POST https://registry.markbase.ru/api/registry/v1/connect \
+  -d '{"project_id":"YOUR_UUID","module_slug":"wallet"}'
+
+# 2. Используйте ключ для запросов
+curl https://wallet.markbase.ru/api/wallet/v1/balance?project_id=YOUR_UUID \
+  -H "X-Api-Key: mk_xxxx" \
+  -H "X-Timestamp: $(date +%s)" \
+  -H "X-Signature: YOUR_HMAC"
+```
+
+## Поддерживаемые платформы
+
+- **JavaScript / Node.js** — npm пакет (планируется)
+- **Python** — pip пакет (планируется)
+- **PHP / WordPress** — WP-плагин (в каждом модуле есть пример)
+- **REST API** — любая платформа через HTTP

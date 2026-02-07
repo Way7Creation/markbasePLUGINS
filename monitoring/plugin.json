@@ -1,0 +1,29 @@
+{
+  "name": "MarkBase Monitoring",
+  "slug": "monitoring",
+  "version": "1.0.0",
+  "description": "Health checks, метрики, алерты, централизованные логи.",
+  "author": "MarkBase",
+  "license": "MIT",
+  "homepage": "https://monitoring.markbase.ru",
+  "api_base": "https://monitoring.markbase.ru/api/monitoring/v1",
+  "port": 8063,
+  "category": "observability",
+  "requires": ["uam", "registry"],
+  "provides": ["health_checks", "metrics", "alerts", "logs"],
+  "endpoints": {
+    "healthcheck_run": "POST /api/monitoring/v1/healthcheck/run",
+    "healthcheck": "GET /api/monitoring/v1/healthcheck",
+    "metrics": "POST /api/monitoring/v1/metrics",
+    "alerts": "GET /api/monitoring/v1/alerts",
+    "logs": "POST /api/monitoring/v1/logs",
+    "health": "GET /api/monitoring/v1/health"
+  },
+  "config": {
+    "MONITORING_URL": "https://monitoring.markbase.ru"
+  },
+  "compatibility": {
+    "platforms": ["javascript", "python", "php", "wordpress", "any"],
+    "min_version": "1.0.0"
+  }
+}
