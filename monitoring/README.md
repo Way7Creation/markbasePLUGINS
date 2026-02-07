@@ -496,6 +496,21 @@ add_action('admin_menu', function() {
 
 ---
 
+## Отказоустойчивость (UAM Graceful Degradation)
+
+Модуль Monitoring использует **кэш сессий UAM** для обеспечения бесперебойной работы:
+
+- При каждой успешной валидации сессии через UAM — результат кэшируется **на 15 минут**
+- Если UAM временно недоступен — используется закэшированный результат
+- Если UAM явно вернул 401 — сессия немедленно удаляется из кэша
+- Фоновое обновление кэша происходит каждые **60 секунд** при доступном UAM
+
+> Залогиненные пользователи **не вылетят** из Monitoring при кратковременных проблемах auth.markbase.ru.
+
+Подробнее: см. [UAM Plugin → Отказоустойчивость](../uam/README.md#отказоустойчивость-graceful-degradation)
+
+---
+
 ## Changelog
 
 ### 1.0.0 (2026-02-07)
@@ -506,4 +521,5 @@ add_action('admin_menu', function() {
 - Централизованные логи с уровнями (debug, info, warning, error, critical)
 - Middleware примеры: Express, FastAPI, Django
 - WordPress-плагин: перехват ошибок, метрики загрузки страниц
+- Session cache: graceful degradation при недоступности UAM
 - Интеграция: JS, Python, PHP, WordPress

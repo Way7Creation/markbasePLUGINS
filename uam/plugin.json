@@ -1,8 +1,8 @@
 {
   "name": "MarkBase UAM (WaySenID)",
   "slug": "uam",
-  "version": "1.0.0",
-  "description": "Единая аутентификация через WaySenID. SSO для всех модулей и сторонних проектов.",
+  "version": "1.2.0",
+  "description": "Единая аутентификация через WaySenID. SSO, регистрация, запоминание аккаунтов, отказоустойчивый кэш.",
   "author": "MarkBase",
   "license": "MIT",
   "homepage": "https://auth.markbase.ru",
@@ -15,8 +15,12 @@
     "login": "POST /api/uam/v1/login",
     "register": "POST /api/uam/v1/register",
     "logout": "POST /api/uam/v1/logout",
+    "logout_all": "POST /api/uam/v1/logout-all",
     "me": "GET /api/uam/v1/me",
     "session_validate": "GET /api/uam/v1/session/validate",
+    "change_password": "POST /api/uam/v1/change-password",
+    "sessions": "GET /api/uam/v1/sessions",
+    "ip_allowlist": "GET /api/uam/v1/ip-allowlist",
     "health": "GET /health"
   },
   "config": {
