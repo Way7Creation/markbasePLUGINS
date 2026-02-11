@@ -1,0 +1,622 @@
+/**
+ * WaySenID Auth Widget — Stylesheet
+ * Version: 2.0.0
+ * CDN:     https://auth.markbase.ru/sdk/waysenid.css
+ * npm:     @markbase/waysenid-sdk/styles.css
+ *
+ * Подключение:
+ *   <link rel="stylesheet" href="https://auth.markbase.ru/sdk/waysenid.css">
+ */
+
+/* ═══════════════════════════════════════════════════
+   1. КНОПКА «Войти через WaySenID»
+   ═══════════════════════════════════════════════════ */
+
+.wsid-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.2s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ── Focus ring (accessibility) ── */
+.wsid-btn:focus-visible {
+  outline: 2px solid #0f172a;
+  outline-offset: 2px;
+}
+
+/* ── Loading state ── */
+.wsid-btn[disabled],
+.wsid-btn--loading {
+  opacity: 0.65;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.wsid-btn--loading::after {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: wsid-spin 0.6s linear infinite;
+  margin-left: 4px;
+}
+
+@keyframes wsid-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ═══ Sizes ═══ */
+
+.wsid-btn--lg {
+  height: 48px;
+  padding: 0 28px;
+  font-size: 15px;
+  border-radius: 12px;
+}
+.wsid-btn--lg .wsid-icon { width: 20px; height: 20px; }
+
+.wsid-btn--md {
+  height: 40px;
+  padding: 0 22px;
+  font-size: 14px;
+  border-radius: 10px;
+}
+.wsid-btn--md .wsid-icon { width: 18px; height: 18px; }
+
+.wsid-btn--sm {
+  height: 34px;
+  padding: 0 16px;
+  font-size: 13px;
+  border-radius: 8px;
+}
+.wsid-btn--sm .wsid-icon { width: 16px; height: 16px; }
+
+/* ═══ Width modifiers ═══ */
+
+.wsid-btn--full {
+  width: 100%;
+}
+
+/* ═══ Variant: Primary (тёмная) ═══ */
+
+.wsid-btn--primary {
+  background: #0f172a;
+  color: #ffffff;
+}
+.wsid-btn--primary:hover {
+  background: #1e293b;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);
+  transform: translateY(-1px);
+}
+.wsid-btn--primary:active {
+  background: #0f172a;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.15);
+  transform: translateY(0);
+}
+
+/* ═══ Variant: Outline (контурная) ═══ */
+
+.wsid-btn--outline {
+  background: #ffffff;
+  color: #0f172a;
+  border: 1.5px solid #e2e5e9;
+}
+.wsid-btn--outline:hover {
+  border-color: #0f172a;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+.wsid-btn--outline:active {
+  border-color: #0f172a;
+  background: #f8f9fb;
+  transform: translateY(0);
+}
+
+/* ═══ Variant: Minimal (текстовая) ═══ */
+
+.wsid-btn--minimal {
+  background: transparent;
+  color: #64748b;
+  padding-left: 0;
+  padding-right: 0;
+}
+.wsid-btn--minimal:hover {
+  color: #0f172a;
+}
+.wsid-btn--minimal:active {
+  color: #1e293b;
+}
+
+/* ═══ Icon ═══ */
+
+.wsid-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+}
+
+.wsid-icon svg {
+  display: block;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   2. РАЗДЕЛИТЕЛЬ «или»
+   ═══════════════════════════════════════════════════ */
+
+.wsid-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 24px 0;
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 500;
+  font-family: 'Inter', system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.wsid-divider::before,
+.wsid-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #e2e5e9, transparent);
+}
+
+
+/* ═══════════════════════════════════════════════════
+   3. КАРТОЧКА ВХОДА (опционально — для консистентности)
+   ═══════════════════════════════════════════════════ */
+
+.wsid-card {
+  width: 100%;
+  max-width: 440px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.08),
+    0 1px 4px rgba(0, 0, 0, 0.04);
+  padding: 40px 36px 32px;
+}
+
+.wsid-card__logo {
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+.wsid-card__title {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 12px 0 0;
+  line-height: 1.3;
+}
+
+.wsid-card__subtitle {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  color: #64748b;
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   4. ПОЛЯ ФОРМЫ (для обычного входа рядом с WaySenID)
+   ═══════════════════════════════════════════════════ */
+
+.wsid-form-group {
+  margin-bottom: 16px;
+}
+
+.wsid-form-group label {
+  display: block;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+.wsid-input {
+  width: 100%;
+  height: 42px;
+  border: 1.5px solid #e2e5e9;
+  border-radius: 10px;
+  padding: 0 14px;
+  font-size: 14px;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: #1a1a2e;
+  background: #ffffff;
+  outline: none;
+  transition: all 0.15s;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wsid-input::placeholder {
+  color: #94a3b8;
+}
+
+.wsid-input:focus {
+  border-color: #0f172a;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.06);
+}
+
+.wsid-input--error {
+  border-color: #ef4444;
+}
+
+.wsid-input--error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.08);
+}
+
+
+/* ═══════════════════════════════════════════════════
+   5. СООБЩЕНИЯ (ошибки, предупреждения, успех)
+   ═══════════════════════════════════════════════════ */
+
+.wsid-alert {
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.wsid-alert--error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+}
+
+.wsid-alert--warning {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #ca8a04;
+}
+
+.wsid-alert--success {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #16a34a;
+}
+
+.wsid-alert--info {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #2563eb;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   6. БЕЙДЖ «Powered by WaySenID»
+   ═══════════════════════════════════════════════════ */
+
+.wsid-powered {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 16px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 11px;
+  color: #c0c5cc;
+}
+
+.wsid-powered a {
+  color: #94a3b8;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.15s;
+}
+
+.wsid-powered a:hover {
+  color: #0f172a;
+}
+
+.wsid-powered .wsid-powered__icon {
+  width: 14px;
+  height: 14px;
+  opacity: 0.5;
+}
+
+
+/* ═══════════════════════════════════════════════════
+   7. АДАПТИВНОСТЬ
+   ═══════════════════════════════════════════════════ */
+
+@media (max-width: 480px) {
+  .wsid-card {
+    padding: 28px 24px 24px;
+    border-radius: 12px;
+  }
+
+  .wsid-card__title {
+    font-size: 20px;
+  }
+
+  .wsid-btn--lg {
+    height: 44px;
+    font-size: 14px;
+  }
+
+  .wsid-divider {
+    margin: 20px 0;
+  }
+}
+
+
+/* ═══════════════════════════════════════════════════
+   8. ONE TAP PROMPT
+   ═══════════════════════════════════════════════════ */
+
+.wsid-onetap {
+  position: fixed;
+  z-index: 2147483647;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wsid-onetap--top-right { top: 20px; right: 20px; }
+.wsid-onetap--top-left { top: 20px; left: 20px; }
+.wsid-onetap--bottom-right { bottom: 20px; right: 20px; }
+
+.wsid-onetap__card {
+  width: 340px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+  padding: 20px;
+  position: relative;
+  animation: wsid-onetap-enter 0.3s ease-out;
+}
+
+.wsid-onetap__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  font-size: 16px;
+  line-height: 1;
+  transition: all 0.15s;
+  padding: 0;
+}
+.wsid-onetap__close:hover {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.wsid-onetap__user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.wsid-onetap__avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.wsid-onetap__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.wsid-onetap__label {
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 2px;
+}
+
+.wsid-onetap__name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wsid-onetap__email {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wsid-onetap__btn {
+  width: 100%;
+  height: 40px;
+  background: #0f172a;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.wsid-onetap__btn:hover {
+  background: #1e293b;
+  box-shadow: 0 4px 12px rgba(15,23,42,0.2);
+}
+
+.wsid-onetap__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 12px;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+/* Multiple accounts in One Tap */
+.wsid-onetap__accounts {
+  max-height: 200px;
+  overflow-y: auto;
+  margin-bottom: 12px;
+}
+
+.wsid-onetap__account-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.12s;
+  margin-bottom: 4px;
+}
+.wsid-onetap__account-item:hover {
+  background: #f1f5f9;
+}
+
+.wsid-onetap__account-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 600;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.wsid-onetap__account-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.wsid-onetap__account-email {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.wsid-onetap__other {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.12s;
+  font-size: 13px;
+  color: #64748b;
+  font-weight: 500;
+}
+.wsid-onetap__other:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+@keyframes wsid-onetap-enter {
+  from { opacity: 0; transform: translateY(-12px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 400px) {
+  .wsid-onetap { display: none !important; }
+}
+
+
+/* ═══════════════════════════════════════════════════
+   9. ТЁМНАЯ ТЕМА (опционально)
+   ═══════════════════════════════════════════════════ */
+
+@media (prefers-color-scheme: dark) {
+  .wsid-btn--outline {
+    background: #1e293b;
+    color: #e2e8f0;
+    border-color: #334155;
+  }
+  .wsid-btn--outline:hover {
+    border-color: #e2e8f0;
+    background: #334155;
+  }
+
+  .wsid-btn--minimal {
+    color: #94a3b8;
+  }
+  .wsid-btn--minimal:hover {
+    color: #e2e8f0;
+  }
+
+  .wsid-card {
+    background: #1e293b;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .wsid-card__title { color: #e2e8f0; }
+  .wsid-card__subtitle { color: #94a3b8; }
+  .wsid-input {
+    background: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
+  }
+  .wsid-input:focus {
+    border-color: #64748b;
+    box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.15);
+  }
+  .wsid-divider { color: #64748b; }
+  .wsid-divider::before,
+  .wsid-divider::after { background: linear-gradient(to right, transparent, #334155, transparent); }
+
+  /* One Tap dark */
+  .wsid-onetap__card {
+    background: #1e293b;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  .wsid-onetap__label { color: #94a3b8; }
+  .wsid-onetap__name { color: #e2e8f0; }
+  .wsid-onetap__close:hover { background: #334155; color: #e2e8f0; }
+  .wsid-onetap__account-item:hover { background: #334155; }
+  .wsid-onetap__account-name { color: #e2e8f0; }
+  .wsid-onetap__other:hover { background: #334155; color: #e2e8f0; }
+}

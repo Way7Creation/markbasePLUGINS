@@ -1,0 +1,24 @@
+{
+  "name": "waygpt-plugin",
+  "version": "1.0.0",
+  "description": "WayGPT Plugin - Универсальный плагин для интеграции с AI Server",
+  "main": "src/javascript/waygpt-client.js",
+  "scripts": {
+    "test": "node examples/javascript/example-basic.js"
+  },
+  "keywords": [
+    "waygpt",
+    "ai",
+    "chat",
+    "gpt",
+    "api"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

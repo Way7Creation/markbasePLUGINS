@@ -1,0 +1,298 @@
+{
+  "name": "WaySenID Auth Widget Specification",
+  "slug": "auth-widget",
+  "version": "3.0.0",
+  "description": "Полная спецификация авторизации WaySenID: OAuth 2.0 + OIDC, One Tap auto sign-in, внешние провайдеры (Google/Яндекс/VK/GitHub), управление подключениями, Developer Dashboard, webhooks, FedCM API.",
+  "author": "MarkBase",
+  "category": "auth",
+
+  "overview": {
+    "provider_name": "WaySenID",
+    "provider_domain": "auth.markbase.ru",
+    "protocol": "OAuth 2.0 + OIDC",
+    "grant_types": ["authorization_code"],
+    "pkce": true,
+    "description": "WaySenID — единый провайдер аутентификации экосистемы MarkBase. Аналог 'Войти через Google/Яндекс' для всех внутренних и внешних проектов."
+  },
+
+  "button": {
+    "variants": {
+      "primary": {
+        "text": "Войти через WaySenID",
+        "background": "#0f172a",
+        "color": "#ffffff",
+        "border": "none",
+        "hover_background": "#1e293b",
+        "icon": "waysenid-logo (monochrome white)"
+      },
+      "outline": {
+        "text": "Войти через WaySenID",
+        "background": "#ffffff",
+        "color": "#0f172a",
+        "border": "1.5px solid #e2e5e9",
+        "hover_border": "#0f172a",
+        "icon": "waysenid-logo (monochrome dark)"
+      },
+      "minimal": {
+        "text": "WaySenID",
+        "background": "transparent",
+        "color": "#64748b",
+        "border": "none",
+        "hover_color": "#0f172a",
+        "icon": "waysenid-logo (monochrome)"
+      }
+    },
+    "sizes": {
+      "lg": { "height": "48px", "padding": "0 28px", "font_size": "15px", "border_radius": "12px", "icon_size": "20px" },
+      "md": { "height": "40px", "padding": "0 22px", "font_size": "14px", "border_radius": "10px", "icon_size": "18px" },
+      "sm": { "height": "34px", "padding": "0 16px", "font_size": "13px", "border_radius": "8px", "icon_size": "16px" }
+    },
+    "layout": {
+      "display": "inline-flex",
+      "align_items": "center",
+      "gap": "10px",
+      "font_family": "Inter, system-ui, sans-serif",
+      "font_weight": 600,
+      "cursor": "pointer",
+      "transition": "all 0.2s"
+    }
+  },
+
+  "flow": {
+    "modes": {
+      "popup": {
+        "description": "Всплывающее окно (по умолчанию). Как у Google — открывается popup, после авторизации закрывается и передаёт токен в родительское окно.",
+        "window_size": { "width": 480, "height": 640 },
+        "window_features": "popup=yes,scrollbars=yes,resizable=yes",
+        "communication": "postMessage (origin-validated)",
+        "recommended_for": "SPA, React/Vue/Angular приложения"
+      },
+      "redirect": {
+        "description": "Полный редирект (fallback). Как у Яндекса — пользователь перенаправляется на auth.markbase.ru, после авторизации — обратно с code.",
+        "recommended_for": "Серверные приложения, SSR, простые сайты"
+      }
+    },
+
+    "steps_popup": [
+      "1. Пользователь нажимает кнопку 'Войти через WaySenID'",
+      "2. Открывается popup: auth.markbase.ru/oauth/authorize?...",
+      "3. WaySenID показывает Account Picker (если есть сохранённые аккаунты) или форму входа",
+      "4. Пользователь входит или выбирает аккаунт",
+      "5. WaySenID показывает экран согласий (Consent Screen) если требуется",
+      "6. WaySenID отправляет postMessage с authorization_code в родительское окно",
+      "7. Popup закрывается автоматически",
+      "8. Клиент обменивает code на access_token через backend"
+    ],
+
+    "steps_redirect": [
+      "1. Пользователь нажимает кнопку 'Войти через WaySenID'",
+      "2. Редирект: auth.markbase.ru/oauth/authorize?...",
+      "3. WaySenID показывает Account Picker / форму входа",
+      "4. После авторизации — редирект обратно: redirect_uri?code=...&state=...",
+      "5. Сервер обменивает code на access_token"
+    ]
+  },
+
+  "oauth_endpoints": {
+    "authorization": "https://auth.markbase.ru/oauth/authorize",
+    "token": "https://auth.markbase.ru/oauth/token",
+    "userinfo": "https://auth.markbase.ru/oauth/userinfo",
+    "revoke": "https://auth.markbase.ru/oauth/revoke",
+    "jwks": "https://auth.markbase.ru/.well-known/jwks.json",
+    "openid_config": "https://auth.markbase.ru/.well-known/openid-configuration"
+  },
+
+  "authorize_params": {
+    "response_type": "code",
+    "client_id": "Выдаётся при регистрации приложения в Registry",
+    "redirect_uri": "URL для возврата после авторизации",
+    "scope": "openid profile email",
+    "state": "CSRF-защита, случайная строка",
+    "code_challenge": "PKCE S256 challenge",
+    "code_challenge_method": "S256",
+    "prompt": "login | consent | select_account | none",
+    "login_hint": "email для предзаполнения",
+    "display": "popup | page"
+  },
+
+  "scopes": {
+    "openid": "Обязательный. OpenID Connect идентификация",
+    "profile": "Имя, аватар, дата регистрации",
+    "email": "Email и статус верификации",
+    "phone": "Номер телефона (если есть)",
+    "billing": "Доступ к данным биллинга",
+    "wallet": "Доступ к кошельку",
+    "modules": "Список подключённых модулей"
+  },
+
+  "account_picker": {
+    "description": "Экран выбора аккаунта. Показывается когда prompt=select_account или когда у пользователя >1 сохранённого аккаунта.",
+    "ui_elements": [
+      "Логотип WaySenID",
+      "Заголовок 'Выберите аккаунт'",
+      "Подзаголовок с именем приложения-клиента",
+      "Список сохранённых аккаунтов (аватар + имя + email)",
+      "Кнопка 'Использовать другой аккаунт'",
+      "Ссылка на политику конфиденциальности"
+    ],
+    "design_tokens": {
+      "card_width": "440px",
+      "card_border_radius": "16px",
+      "card_shadow": "0 4px 24px rgba(0,0,0,0.08)",
+      "account_item_padding": "14px 16px",
+      "account_item_border_radius": "12px",
+      "account_item_border": "1px solid #e8e8e8",
+      "avatar_size": "40px",
+      "avatar_border_radius": "50%"
+    }
+  },
+
+  "consent_screen": {
+    "description": "Экран согласий. Показывается при первом входе в приложение или при запросе новых scopes.",
+    "ui_elements": [
+      "Логотип WaySenID",
+      "Информация о приложении-клиенте (название, домен, иконка)",
+      "Аватар текущего пользователя",
+      "Список запрашиваемых разрешений с иконками",
+      "Кнопка 'Разрешить' (primary)",
+      "Кнопка 'Отклонить' (outline)",
+      "Ссылка на политику конфиденциальности клиента"
+    ],
+    "permissions_display": {
+      "profile": { "label": "Ваше имя и фото профиля", "icon": "user" },
+      "email": { "label": "Ваш email адрес", "icon": "email" },
+      "phone": { "label": "Ваш номер телефона", "icon": "phone" },
+      "billing": { "label": "Данные о подписках и тарифах", "icon": "credit-card" },
+      "wallet": { "label": "Баланс и транзакции", "icon": "wallet" }
+    }
+  },
+
+  "sdk": {
+    "name": "WaySenID JS SDK",
+    "cdn": "https://auth.markbase.ru/sdk/waysenid.js",
+    "npm": "@markbase/waysenid-sdk",
+    "init_method": "WaySenID.init({ client_id, redirect_uri, scope })",
+    "login_method": "WaySenID.login({ mode, prompt })",
+    "logout_method": "WaySenID.logout()",
+    "getUser_method": "WaySenID.getUser()",
+    "events": ["login", "logout", "token_expired", "error"],
+    "render_button": "WaySenID.renderButton(container, options)"
+  },
+
+  "registration_flow": {
+    "description": "Если у пользователя нет аккаунта WaySenID — регистрация происходит ВНУТРИ auth.markbase.ru, НЕ на стороне клиента.",
+    "steps": [
+      "1. Ввод email",
+      "2. Проверка уникальности email",
+      "3. Ввод пароля (мин. 8 символов, upper+lower+digits)",
+      "4. Captcha (Яндекс SmartCaptcha)",
+      "5. Принятие согласий (политика + условия + ПД)",
+      "6. Отправка письма с 6-значным кодом",
+      "7. Подтверждение email (ввод кода)",
+      "8. Аккаунт активирован → Consent Screen → redirect/postMessage"
+    ],
+    "guarantees": {
+      "email_verified": "Всегда true после регистрации",
+      "password_policy": "Мин. 8 символов, заглавные+строчные+цифры",
+      "captcha": "Яндекс SmartCaptcha на регистрации",
+      "consents": "Политика + условия + ПД обязательны",
+      "anti_bruteforce": "Макс. 10 попыток / 30 мин",
+      "unique_email": "Один аккаунт = один email"
+    },
+    "client_responsibility": {
+      "NOT_needed": ["Реализация регистрации", "Подтверждение email", "Хранение паролей", "Captcha"],
+      "NEEDED": ["Обработка callback (code→token→userinfo)", "Создание пользователя в своей БД", "Проверка email_verified", "Различение новых/повторных пользователей (onboarding)"]
+    }
+  },
+
+  "security": {
+    "csrf_state": "Обязательный случайный state, генерируется на сервере, проверяется при callback",
+    "pkce": "Обязательно для SPA, рекомендуется для всех. S256 code_challenge",
+    "token_storage": "access_token — только в httpOnly cookie или серверной сессии, НИКОГДА в localStorage",
+    "token_encryption": "access_token и refresh_token в БД шифруются AES-256-CBC",
+    "cors": "Только зарегистрированные redirect_uri",
+    "rate_limiting": "Anti-brute-force через модуль Security, макс. 30 req/min на callback",
+    "consent_storage": "Согласия привязаны к client_id + user_id, хранятся серверно",
+    "token_rotation": "refresh_token одноразовый, обновляется при каждом использовании",
+    "origin_check": "В popup-режиме обязательная проверка event.origin в postMessage",
+    "https_only": "Все OAuth-эндпоинты только по HTTPS",
+    "client_secret_server_only": "client_secret НИКОГДА не передаётся на фронтенд",
+    "session_ttl": "Максимум 72 часа, рекомендуется 24",
+    "audit_logging": "Логирование всех OAuth-событий (login, logout, errors)"
+  },
+
+  "one_tap": {
+    "description": "Автоматическое предложение входа — промпт 'Войти как [Имя]' появляется если пользователь уже залогинен в WaySenID",
+    "detection_methods": ["iframe_session_probe", "fedcm_api"],
+    "prompt_positions": ["top-right", "top-left", "bottom-right", "center", "inline"],
+    "auto_select": "Вход без клика если: 1 аккаунт + consent дан + не отклонял ранее",
+    "cooldown": "24 часа после закрытия промпта",
+    "fedcm": "Federated Credential Management API (Chrome 108+) — нативный браузерный flow",
+    "docs": "ONETAP.md"
+  },
+
+  "external_providers": {
+    "description": "WaySenID как агрегатор — подключение внешних провайдеров аутентификации",
+    "supported": ["google", "yandex", "vk", "github", "apple", "telegram", "mailru"],
+    "behavior": {
+      "existing_email": "Привязка провайдера к существующему аккаунту WaySenID",
+      "new_email": "Автоматическое создание аккаунта (email подтверждён провайдером)",
+      "different_email": "Подтверждение привязки через UI"
+    },
+    "docs": "PROVIDERS.md"
+  },
+
+  "connected_apps": {
+    "description": "Пользователь видит все приложения, которым дал доступ через WaySenID",
+    "features": ["Список приложений с scopes", "Управление разрешениями", "Отзыв доступа", "История входов"],
+    "path": "auth.markbase.ru/account/connections",
+    "docs": "PROVIDERS.md"
+  },
+
+  "developer_dashboard": {
+    "description": "Панель разработчика для управления OAuth-приложениями",
+    "path": "registry.markbase.ru/apps",
+    "features": ["Credentials management", "Брендинг (Consent Screen preview)", "One Tap настройки", "Webhooks", "Статистика и аналитика", "Аудит-лог"],
+    "docs": "DASHBOARD.md"
+  },
+
+  "webhooks": {
+    "events": ["user.login", "user.logout", "consent.granted", "consent.revoked", "user.updated", "user.deleted", "token.refreshed"],
+    "signature": "HMAC-SHA256",
+    "retry": { "attempts": 3, "backoff": [5, 30, 300] }
+  },
+
+  "files": {
+    "README.md": "Обзор, кнопка, OAuth endpoints, SDK, регистрация, дизайн-гайдлайны",
+    "INTEGRATION.md": "Полное руководство интеграции с примером WayGPT, lifecycle, backend, БД, безопасность",
+    "ONETAP.md": "One Tap auto sign-in, session detection (iframe + FedCM), prompt UI, auto-select, CSS",
+    "PROVIDERS.md": "Внешние провайдеры, управление подключениями, connected apps, webhooks, схема БД",
+    "DASHBOARD.md": "Developer Dashboard, Admin Panel, статистика, аудит-лог, API",
+    "waysenid.css": "Ready-to-use CSS: кнопка, форма, One Tap prompt, адаптивность, тёмная тема",
+    "plugin.json": "Метаданные спецификации"
+  },
+
+  "design_guidelines": {
+    "font_family": "Inter, system-ui, sans-serif",
+    "icons": "Monochrome SVG (Feather-style), stroke=currentColor",
+    "colors": {
+      "primary": "#0f172a",
+      "accent": "#0f172a",
+      "text": "#1a1a2e",
+      "secondary_text": "#64748b",
+      "muted": "#94a3b8",
+      "border": "#e2e5e9",
+      "background": "#f7f8fa",
+      "card": "#ffffff",
+      "success": "#16a34a",
+      "danger": "#ef4444"
+    },
+    "border_radius": {
+      "button": "10px",
+      "card": "16px",
+      "input": "10px",
+      "avatar": "50%",
+      "badge": "12px"
+    }
+  }
+}

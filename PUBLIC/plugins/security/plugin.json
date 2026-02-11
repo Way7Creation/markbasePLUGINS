@@ -1,0 +1,42 @@
+{
+  "name": "MarkBase Security",
+  "slug": "security",
+  "version": "1.1.0",
+  "description": "Rate limiting, IP allowlist/denylist, audit log для всех модулей. Интегрирован с UAM v1.3.0 для многоуровневой защиты.",
+  "author": "MarkBase",
+  "license": "MIT",
+  "homepage": "https://security.markbase.ru",
+  "api_base": "https://security.markbase.ru/api/security/v1",
+  "port": 8061,
+  "category": "security",
+  "requires": ["uam", "registry"],
+  "provides": ["rate_limiting", "ip_filter", "audit_log", "brute_force_integration"],
+  "endpoints": {
+    "ratelimit_check": "POST /api/security/v1/ratelimit/check",
+    "iplist": "GET /api/security/v1/iplist",
+    "iplist_check": "GET /api/security/v1/iplist/check",
+    "audit": "GET /api/security/v1/audit",
+    "audit_write": "POST /api/security/v1/audit",
+    "health": "GET /api/security/v1/health"
+  },
+  "uam_integration": {
+    "description": "UAM v1.3.0 включает встроенные модули безопасности, которые работают совместно с Security API",
+    "built_in_modules": [
+      "brute_force_protection",
+      "progressive_lockout",
+      "ip_auto_block",
+      "global_rate_limiter",
+      "auth_rate_limiter",
+      "password_policy",
+      "security_headers",
+      "audit_logging"
+    ]
+  },
+  "config": {
+    "SECURITY_URL": "https://security.markbase.ru"
+  },
+  "compatibility": {
+    "platforms": ["javascript", "python", "php", "wordpress", "any"],
+    "min_version": "1.0.0"
+  }
+}

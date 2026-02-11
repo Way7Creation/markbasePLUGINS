@@ -1,0 +1,30 @@
+{
+  "name": "Docker Performance Optimizations",
+  "slug": "docker-performance",
+  "version": "1.0.0",
+  "description": "Оптимизации сборки Docker-образов для проектов с React/Node.js frontend. Решение проблем OOM, ускорение билдов, стратегии для серверов с ограниченной памятью.",
+  "author": "MarkBase",
+  "license": "MIT",
+  "category": "devops",
+  "requires": [],
+  "provides": ["docker_build_optimization", "react_build_optimization", "memory_management"],
+  "applies_to": ["react", "node", "docker", "docker-compose"],
+  "problems_solved": [
+    "OOM kill при npm run build в Docker (react-scripts / webpack)",
+    "BuildKit pipe error: read |0: file already closed",
+    "Параллельная сборка сервисов на VPS с ограниченной памятью",
+    "Несуществующие иконки @ant-design/icons при обновлении версий"
+  ],
+  "optimizations": {
+    "dockerfile": {
+      "GENERATE_SOURCEMAP": "Отключение source maps в production сборке React",
+      "NODE_OPTIONS_max_old_space_size": "Ограничение V8 heap для предотвращения OOM"
+    },
+    "build_strategy": {
+      "sequential_heavy_builds": "Сначала собираем тяжёлые сервисы (frontend), потом лёгкие параллельно"
+    },
+    "system": {
+      "swap_file": "Добавление swap на VPS при нехватке RAM"
+    }
+  }
+}

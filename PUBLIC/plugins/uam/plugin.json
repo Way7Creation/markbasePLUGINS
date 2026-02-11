@@ -1,0 +1,118 @@
+{
+  "name": "MarkBase UAM (WaySenID)",
+  "slug": "uam",
+  "version": "1.5.0",
+  "description": "Единая аутентификация через WaySenID. SSO, регистрация, интеллектуальная проверка email, запоминание аккаунтов, отказоустойчивый кэш, многоуровневая защита от brute-force, DDoS, IP-блокировка.",
+  "author": "MarkBase",
+  "license": "MIT",
+  "homepage": "https://auth.markbase.ru",
+  "api_base": "https://auth.markbase.ru/api/uam/v1",
+  "port": 8060,
+  "category": "authentication",
+  "requires": ["captcha"],
+  "provides": ["authentication", "session", "sso", "brute_force_protection", "rate_limiting", "ip_allowlist", "audit_log", "captcha_integration", "logout_redirect", "email_verification", "account_switcher"],
+  "endpoints": {
+    "check_email": "POST /api/uam/v1/check-email",
+    "login": "POST /api/uam/v1/login",
+    "switch_with_token": "POST /api/uam/v1/switch-with-token",
+    "register": "POST /api/uam/v1/register",
+    "verify_email": "POST /api/uam/v1/verify-email",
+    "logout": "POST /api/uam/v1/logout",
+    "logout_redirect": "GET /api/uam/v1/logout?return_url=...",
+    "logout_all": "POST /api/uam/v1/logout-all",
+    "me": "GET /api/uam/v1/me",
+    "session_validate": "GET /api/uam/v1/session/validate",
+    "profile_update": "PATCH /api/uam/v1/profile",
+    "change_password": "POST /api/uam/v1/change-password",
+    "sessions": "GET /api/uam/v1/sessions",
+    "session_patch": "PATCH /api/uam/v1/sessions/:session_id",
+    "session_revoke": "DELETE /api/uam/v1/sessions/:session_id",
+    "ip_allowlist": "GET /api/uam/v1/ip-allowlist",
+    "ip_allowlist_add": "POST /api/uam/v1/ip-allowlist",
+    "ip_allowlist_delete": "DELETE /api/uam/v1/ip-allowlist/:id",
+    "ip_allowlist_add_current": "POST /api/uam/v1/ip-allowlist/add-current",
+    "consents_get": "GET /api/uam/v1/consents",
+    "consents_manage": "POST /api/uam/v1/consents",
+    "projects_list": "GET /api/uam/v1/projects",
+    "project_link": "POST /api/uam/v1/projects/:project_id/link",
+    "security_status": "GET /api/uam/v1/security/status",
+    "security_settings": "PATCH /api/uam/v1/security/settings",
+    "security_login_history": "GET /api/uam/v1/security/login-history",
+    "security_protection_info": "GET /api/uam/v1/security/protection-info",
+    "2fa_send": "POST /api/uam/v1/2fa/send [заглушка]",
+    "2fa_verify": "POST /api/uam/v1/2fa/verify [заглушка]",
+    "health": "GET /health"
+  },
+  "security": {
+    "brute_force": {
+      "max_attempts": 10,
+      "window_minutes": 30,
+      "progressive_lockout": true,
+      "lockout_1x": "60 мин",
+      "lockout_2x": "120 мин",
+      "lockout_3x": "240 мин"
+    },
+    "global_rate_limit": {
+      "max_requests": 120,
+      "window_seconds": 60
+    },
+    "auth_rate_limit": {
+      "max_requests": 20,
+      "window_seconds": 60
+    },
+    "ip_auto_block": true,
+    "captcha": {
+      "register": "required",
+      "login": "conditional_backend_only",
+      "login_note": "Backend middleware готов проверять капчу при входе (conditional). Фронтенд не показывает капчу на логине — защита входа обеспечивается brute-force + IP-block + rate limit",
+      "password_change": "conditional",
+      "provider": "custom",
+      "fail_open": true
+    },
+    "password_policy": {
+      "min_length": 8,
+      "require_uppercase": true,
+      "require_lowercase": true,
+      "require_digit": true
+    },
+    "session_ttl_hours": 72,
+    "https_enforcement": true,
+    "security_headers": ["HSTS", "X-Frame-Options", "X-XSS-Protection", "X-Content-Type-Options"]
+  },
+  "account_switcher": {
+    "description": "Переключение аккаунтов из шапки любого модуля. Обязательно для всех модулей. Без запроса пароля — если разрешено настройками целевого аккаунта и не истёк срок невхода.",
+    "localStorage_keys": {
+      "wsid_accounts": "JSON массив до 5 аккаунтов: email, display_name, last_login, switch_token?, require_password_on_switch?, switch_inactivity_days? (из ответа POST /login)",
+      "wsid_last_email": "Email последнего входа (string)",
+      "wsid_last_name": "Display name последнего входа (string)"
+    },
+    "login_url_params": {
+      "switch": "Email аккаунта — пропускает Account Picker, сразу ввод пароля",
+      "new_account": "1 — пропускает Account Picker, сразу ввод email",
+      "return_url": "URL для возврата после входа",
+      "email": "Предзаполнение email (для перехода из регистрации)"
+    },
+    "actions": {
+      "switch_account": "Если разрешено настройками и есть switch_token и не истёк срок невхода → POST /switch-with-token {email, switch_token}; иначе POST /logout → redirect /login?switch={email}&return_url={url}",
+      "add_account": "POST /logout → redirect /login?new_account=1&return_url={url}",
+      "remove_saved": "localStorage: удалить из wsid_accounts",
+      "logout": "POST /logout → redirect /login?return_url={url}"
+    },
+    "security": {
+      "require_password_on_switch": "always | after_inactivity (настройка в Безопасности)",
+      "switch_inactivity_days": "Дней невхода для запроса пароля (по умолчанию 180)",
+      "switch_token_ttl_days": "Срок жизни токена (UAM_SWITCH_TOKEN_TTL_DAYS, по умолчанию 30)"
+    },
+    "max_saved_accounts": 5
+  },
+  "config": {
+    "UAM_URL": "https://auth.markbase.ru",
+    "UAM_SESSION_COOKIE": "uam_session",
+    "UAM_COOKIE_DOMAIN": ".markbase.ru",
+    "UAM_SESSION_TTL_HOURS": 72
+  },
+  "compatibility": {
+    "platforms": ["javascript", "python", "php", "wordpress", "any"],
+    "min_version": "1.0.0"
+  }
+}

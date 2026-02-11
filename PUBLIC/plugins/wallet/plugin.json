@@ -1,0 +1,31 @@
+{
+  "name": "MarkBase Wallet",
+  "slug": "wallet",
+  "version": "1.0.0",
+  "description": "Балансы, транзакции, пополнение, списание, платёжные методы.",
+  "author": "MarkBase",
+  "license": "MIT",
+  "homepage": "https://wallet.markbase.ru",
+  "api_base": "https://wallet.markbase.ru/api/wallet/v1",
+  "port": 8070,
+  "category": "payments",
+  "requires": ["uam", "registry", "billing"],
+  "provides": ["wallets", "transactions", "topup", "charge", "payment_methods"],
+  "endpoints": {
+    "wallet_create": "POST /api/wallet/v1/wallet",
+    "wallet_get": "GET /api/wallet/v1/wallet",
+    "balance": "GET /api/wallet/v1/balance",
+    "topup": "POST /api/wallet/v1/topup",
+    "charge": "POST /api/wallet/v1/charge",
+    "transactions": "GET /api/wallet/v1/transactions",
+    "payment_methods": "GET /api/wallet/v1/payment-methods",
+    "health": "GET /api/wallet/v1/health"
+  },
+  "config": {
+    "WALLET_URL": "https://wallet.markbase.ru"
+  },
+  "compatibility": {
+    "platforms": ["javascript", "python", "php", "wordpress", "any"],
+    "min_version": "1.0.0"
+  }
+}

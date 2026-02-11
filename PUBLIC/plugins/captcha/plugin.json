@@ -1,0 +1,92 @@
+{
+  "name": "MarkBase Captcha",
+  "slug": "captcha",
+  "version": "1.1.0",
+  "description": "Универсальная защита форм от ботов. 3 провайдера: собственная капча (по умолчанию), Яндекс SmartCaptcha, Google reCAPTCHA. Fail-open стратегия.",
+  "author": "MarkBase",
+  "license": "MIT",
+  "homepage": "https://captcha.markbase.ru",
+  "api_base": "https://captcha.markbase.ru/api/captcha/v1",
+  "widget_url": "https://captcha.markbase.ru/widget.js",
+  "port": 8079,
+  "category": "security",
+  "requires": ["uam"],
+  "provides": ["captcha", "bot_protection", "form_security"],
+  "endpoints": {
+    "challenge": "POST /api/captcha/v1/challenge",
+    "verify": "POST /api/captcha/v1/verify",
+    "config": "GET /api/captcha/v1/config",
+    "stats": "GET /api/captcha/v1/stats",
+    "health": "GET /health",
+    "projects_list": "GET /api/captcha/v1/projects",
+    "projects_create": "POST /api/captcha/v1/projects",
+    "projects_update": "PATCH /api/captcha/v1/projects/:id",
+    "projects_delete": "DELETE /api/captcha/v1/projects/:id",
+    "projects_regen_keys": "POST /api/captcha/v1/projects/:id/regenerate-keys"
+  },
+  "providers": {
+    "custom": {
+      "name": "MarkBase Captcha (собственная)",
+      "description": "SVG-изображения с искажённым текстом/математикой, не требует внешних сервисов",
+      "enabled": true,
+      "default": true,
+      "requires_external": false,
+      "types": ["text", "math"]
+    },
+    "yandex": {
+      "name": "Яндекс SmartCaptcha",
+      "description": "Облачный сервис, невидимая проверка, требуется аккаунт Яндекс.Облако",
+      "enabled": true,
+      "requires_external": true,
+      "config_url": "https://cloud.yandex.ru/services/smartcaptcha"
+    },
+    "google": {
+      "name": "Google reCAPTCHA v3",
+      "description": "Невидимая проверка со скором, требуется аккаунт Google",
+      "enabled": true,
+      "requires_external": true,
+      "config_url": "https://www.google.com/recaptcha/admin"
+    }
+  },
+  "config": {
+    "CAPTCHA_URL": "https://captcha.markbase.ru",
+    "CAPTCHA_ENABLED": true,
+    "CAPTCHA_FAIL_OPEN": true,
+    "CAPTCHA_PROVIDER": "custom",
+    "CAPTCHA_PORT": 8079
+  },
+  "integration": {
+    "uam": {
+      "register": "required",
+      "login": "conditional (после 3 неудачных попыток)",
+      "password_change": "conditional"
+    },
+    "forms": {
+      "contact": "recommended",
+      "chat": "recommended",
+      "comments": "recommended",
+      "payment": "fail_closed"
+    },
+    "third_party": {
+      "any_website": "via widget.js + site_key",
+      "wordpress": "plugin (планируется)",
+      "tilda": "html embed"
+    }
+  },
+  "database": {
+    "schema": "captcha",
+    "tables": ["projects", "challenges", "verifications", "daily_stats", "migrations"]
+  },
+  "security": {
+    "fail_open": true,
+    "rate_limit": "60 req/min per IP",
+    "token_ttl": "300 seconds",
+    "progressive_difficulty": true,
+    "domain_whitelist": true,
+    "key_rotation": true
+  },
+  "compatibility": {
+    "platforms": ["javascript", "react", "python", "php", "wordpress", "any"],
+    "min_node_version": "18.0.0"
+  }
+}

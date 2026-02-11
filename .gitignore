@@ -1,0 +1,51 @@
+# ============================================================
+# Plugins — ПУБЛИЧНЫЙ РЕПОЗИТОРИЙ
+# ============================================================
+# НЕ КОММИТИТЬ: .env, пароли, API-ключи, токены, приватные данные!
+# ============================================================
+
+# Переменные окружения и секреты
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+*.env
+!*.env.example
+!env.example
+
+# Ключи, сертификаты, пароли
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+*credentials*
+*secrets*
+*passwords*
+*.secret
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+env/
+ENV/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE и ОС
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Логи
+*.log
