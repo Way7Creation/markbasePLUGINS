@@ -1,5 +1,17 @@
 # Команды — Plugins (markbasePLUGINS)
 
+## Вход на сервер (SSH ключи, пароль отключён)
+```powershell
+ssh server-root-main             # root (администратор)
+ssh server-waysen-main           # moduletrade.ru
+ssh server-waycore-main          # markbaseCORE
+ssh server-waypay-main           # sererandpay
+ssh server-w7c-main              # w7c
+```
+Полное руководство: `УПРАВЛЕНИЕ/SSH_ВХОД_И_КЛЮЧИ.md`
+
+---
+
 Плагины разворачиваются в составе основных проектов. Отдельного серверного деплоя у репозитория Plugins нет. В каждом из перечисленных проектов есть **один и тот же скрипт** `scripts/deployment/redeploy-interactive.sh` с одинаковыми флагами.
 
 ============================================
