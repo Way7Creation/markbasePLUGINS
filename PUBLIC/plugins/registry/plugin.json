@@ -1,8 +1,8 @@
 {
   "name": "MarkBase Registry",
   "slug": "registry",
-  "version": "1.0.0",
-  "description": "Каталог модулей, API-ключи, HMAC-секреты, маршрутизация доменов.",
+  "version": "1.1.0",
+  "description": "Каталог модулей, API-ключи, HMAC-секреты, маршрутизация доменов. Центральный реестр всех модулей экосистемы.",
   "author": "MarkBase",
   "license": "MIT",
   "homepage": "https://registry.markbase.ru",
@@ -13,10 +13,153 @@
   "provides": ["module_catalog", "api_keys", "hmac", "domain_resolve"],
   "endpoints": {
     "modules": "GET /api/registry/v1/modules",
+    "module_get": "GET /api/registry/v1/modules/:slug",
     "connect": "POST /api/registry/v1/connect",
+    "disconnect": "POST /api/registry/v1/disconnect",
     "connections": "GET /api/registry/v1/connections",
+    "connection_status": "GET /api/registry/v1/connections/:module_slug/status",
     "resolve": "GET /api/registry/v1/resolve",
+    "api_keys": "GET /api/registry/v1/api-keys",
+    "api_key_regenerate": "POST /api/registry/v1/api-keys/:module_slug/regenerate",
     "health": "GET /api/registry/v1/health"
+  },
+  "registered_modules": {
+    "core": [
+      {
+        "slug": "uam",
+        "name": "UAM (WaySenID)",
+        "domain": "auth.markbase.ru",
+        "port": 8060,
+        "category": "authentication",
+        "icon": "shield",
+        "color": "#0f172a",
+        "description": "Единая аутентификация, SSO, сессии, 2FA"
+      },
+      {
+        "slug": "captcha",
+        "name": "Captcha",
+        "domain": "captcha.markbase.ru",
+        "port": 8079,
+        "category": "security",
+        "icon": "check-circle",
+        "color": "#16a34a",
+        "description": "Защита форм от ботов"
+      },
+      {
+        "slug": "registry",
+        "name": "Registry",
+        "domain": "registry.markbase.ru",
+        "port": 8065,
+        "category": "infrastructure",
+        "icon": "database",
+        "color": "#6366f1",
+        "description": "Каталог модулей, API-ключи"
+      },
+      {
+        "slug": "security",
+        "name": "Security",
+        "domain": "security.markbase.ru",
+        "port": 8061,
+        "category": "security",
+        "icon": "lock",
+        "color": "#dc2626",
+        "description": "Rate limiting, IP-фильтрация, аудит"
+      },
+      {
+        "slug": "monitoring",
+        "name": "Monitoring",
+        "domain": "monitoring.markbase.ru",
+        "port": null,
+        "category": "infrastructure",
+        "icon": "activity",
+        "color": "#f59e0b",
+        "description": "Health checks, метрики, алерты"
+      },
+      {
+        "slug": "billing",
+        "name": "Billing",
+        "domain": "billing.markbase.ru",
+        "port": 8069,
+        "category": "payments",
+        "icon": "credit-card",
+        "color": "#8b5cf6",
+        "description": "Тарифы, подписки, лимиты"
+      },
+      {
+        "slug": "wallet",
+        "name": "Wallet",
+        "domain": "wallet.markbase.ru",
+        "port": 8070,
+        "category": "payments",
+        "icon": "dollar-sign",
+        "color": "#059669",
+        "description": "Балансы, транзакции, платежи"
+      }
+    ],
+    "business": [
+      {
+        "slug": "crm",
+        "name": "CRM",
+        "domain": "crm.markbase.ru",
+        "port": 8067,
+        "category": "business",
+        "icon": "users",
+        "color": "#2563eb",
+        "description": "Управление клиентами, менеджерами, активностями"
+      },
+      {
+        "slug": "hrm",
+        "name": "HRM",
+        "domain": "hrm.markbase.ru",
+        "port": 8068,
+        "category": "business",
+        "icon": "briefcase",
+        "color": "#7c3aed",
+        "description": "Управление сотрудниками, отделами"
+      },
+      {
+        "slug": "orders",
+        "name": "Orders",
+        "domain": "orders.markbase.ru",
+        "port": 8085,
+        "category": "business",
+        "icon": "shopping-bag",
+        "color": "#ea580c",
+        "description": "Закупки у поставщиков, спецификации"
+      },
+      {
+        "slug": "shop",
+        "name": "Shop",
+        "domain": "shop.markbase.ru",
+        "port": 8020,
+        "category": "ecommerce",
+        "icon": "shopping-cart",
+        "color": "#0891b2",
+        "description": "Интернет-магазин, каталог, B2B/B2C чекаут"
+      }
+    ],
+    "logistics": [
+      {
+        "slug": "delivery",
+        "name": "Delivery",
+        "domain": "delivery.markbase.ru",
+        "port": 8080,
+        "category": "logistics",
+        "icon": "truck",
+        "color": "#65a30d",
+        "description": "Доставка: CDEK, Деловые Линии, ПЭК"
+      },
+      {
+        "slug": "logistics",
+        "name": "Logistics",
+        "domain": "logistics.markbase.ru",
+        "port": 8090,
+        "category": "logistics",
+        "icon": "package",
+        "color": "#ca8a04",
+        "description": "Заказы, отправления, возвраты, QR-коды"
+      }
+    ]
   },
   "config": {
     "REGISTRY_URL": "https://registry.markbase.ru"

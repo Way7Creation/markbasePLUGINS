@@ -1,0 +1,85 @@
+{
+  "name": "MarkBase CRM",
+  "slug": "crm",
+  "version": "1.0.0",
+  "description": "Управление клиентами, менеджерами, заказами и активностями. Полная изоляция данных по shop_id — каждый клиент видит только свои данные.",
+  "author": "MarkBase",
+  "license": "MIT",
+  "homepage": "https://crm.markbase.ru",
+  "api_base": "https://crm.markbase.ru/api/crm/v1",
+  "port": 8067,
+  "category": "business",
+  "requires": ["uam", "registry"],
+  "provides": ["client_management", "manager_assignments", "order_history", "contact_management", "activity_tracking", "document_management", "webhooks"],
+  "multi_tenant": {
+    "isolation": "shop_id",
+    "description": "Все данные изолированы по shop_id. Каждый магазин/проект видит только своих клиентов, менеджеров, заказы и активности. Данные разных клиентов никогда не пересекаются.",
+    "header": "X-Shop-Id",
+    "enforcement": "Все SQL-запросы содержат WHERE shop_id = $shop_id. Индексы на shop_id для каждой таблицы.",
+    "api_keys_per_shop": true
+  },
+  "auth": {
+    "type": "uam_session + hmac",
+    "session_cookie": "uam_session",
+    "cookie_domain": ".markbase.ru",
+    "hmac_headers": ["X-Api-Key", "X-Timestamp", "X-Signature", "X-Shop-Id"],
+    "description": "Браузерные запросы авторизуются через uam_session cookie (SSO). Межмодульные запросы подписываются HMAC-SHA256."
+  },
+  "endpoints": {
+    "clients_list": "GET /api/crm/v1/clients",
+    "client_get": "GET /api/crm/v1/clients/:id",
+    "client_create": "POST /api/crm/v1/clients",
+    "client_update": "PATCH /api/crm/v1/clients/:id",
+    "client_delete": "DELETE /api/crm/v1/clients/:id",
+    "client_orders": "GET /api/crm/v1/clients/:id/orders",
+    "client_add_address": "POST /api/crm/v1/clients/:id/addresses",
+    "client_get_or_create": "POST /api/crm/v1/clients/get-or-create",
+    "managers_list": "GET /api/crm/v1/managers",
+    "manager_create": "POST /api/crm/v1/managers",
+    "manager_update": "PATCH /api/crm/v1/managers/:id",
+    "manager_assign_client": "POST /api/crm/v1/managers/:id/assign-client",
+    "manager_clients": "GET /api/crm/v1/managers/:id/clients",
+    "activities_list": "GET /api/crm/v1/activities",
+    "activity_create": "POST /api/crm/v1/activities",
+    "activity_complete": "PATCH /api/crm/v1/activities/:id/complete",
+    "documents_list": "GET /api/crm/v1/documents",
+    "document_get": "GET /api/crm/v1/documents/:id",
+    "document_create": "POST /api/crm/v1/documents",
+    "document_update": "PATCH /api/crm/v1/documents/:id",
+    "document_stats": "GET /api/crm/v1/documents/stats",
+    "document_to_invoice": "POST /api/crm/v1/documents/:id/to-invoice",
+    "webhook_orders": "POST /api/crm/v1/webhooks/orders",
+    "webhook_order_status": "POST /api/crm/v1/webhooks/order-status",
+    "webhook_hrm_sync": "POST /api/crm/v1/webhooks/hrm-sync",
+    "webhook_generic": "POST /api/crm/v1/webhooks/:provider",
+    "health": "GET /api/crm/v1/health",
+    "info": "GET /api/crm/v1/info",
+    "ready": "GET /api/crm/v1/ready"
+  },
+  "admin_endpoints": {
+    "base": "/api/crm/v1/admin",
+    "description": "Административные маршруты для владельцев магазинов"
+  },
+  "integrations": {
+    "shop": "Получает данные о заказах через webhook",
+    "orders": "Получает обновления статусов заказов",
+    "hrm": "Синхронизация менеджеров из HRM модуля",
+    "delivery": "Статусы доставки через webhook"
+  },
+  "database": {
+    "name": "crm_db",
+    "schema": "crm",
+    "tables": ["clients", "client_addresses", "managers", "client_manager_assignments", "orders_log", "activities", "notes", "webhooks_inbox", "outbox_events", "api_keys"],
+    "isolation_indexes": "Все таблицы индексированы по shop_id"
+  },
+  "config": {
+    "CRM_URL": "https://crm.markbase.ru",
+    "CRM_PORT": 8067,
+    "CRM_API_KEY": "Выдаётся через Registry",
+    "CRM_HMAC_SECRET": "Выдаётся через Registry"
+  },
+  "compatibility": {
+    "platforms": ["javascript", "python", "php", "wordpress", "any"],
+    "min_version": "1.0.0"
+  }
+}

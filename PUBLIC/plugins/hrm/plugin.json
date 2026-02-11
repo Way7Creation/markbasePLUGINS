@@ -1,0 +1,76 @@
+{
+  "name": "MarkBase HRM",
+  "slug": "hrm",
+  "version": "1.0.0",
+  "description": "Управление сотрудниками, отделами, должностями и настройками компании. Полная изоляция данных по company_id/shop_id.",
+  "author": "MarkBase",
+  "license": "MIT",
+  "homepage": "https://hrm.markbase.ru",
+  "api_base": "https://hrm.markbase.ru/api/hrm/v1",
+  "port": 8068,
+  "category": "business",
+  "requires": ["uam", "registry"],
+  "provides": ["employee_management", "department_hierarchy", "position_management", "company_settings", "kpi_tracking", "crm_sync"],
+  "multi_tenant": {
+    "isolation": "company_id + shop_id",
+    "description": "Все данные изолированы по company_id и shop_id. Каждая компания управляет только своими сотрудниками, отделами и настройками.",
+    "headers": ["X-Company-Id", "X-Shop-Id"],
+    "enforcement": "Все SQL-запросы содержат WHERE company_id = $company_id. Индексы для изоляции.",
+    "api_keys_per_company": true
+  },
+  "auth": {
+    "type": "uam_session + hmac",
+    "session_cookie": "uam_session",
+    "cookie_domain": ".markbase.ru",
+    "hmac_headers": ["X-Api-Key", "X-Timestamp", "X-Signature", "X-Company-Id", "X-Shop-Id"],
+    "description": "Браузерные запросы авторизуются через uam_session cookie (SSO). Межмодульные запросы подписываются HMAC-SHA256."
+  },
+  "endpoints": {
+    "employees_list": "GET /api/hrm/v1/employees",
+    "employee_get": "GET /api/hrm/v1/employees/:id",
+    "employee_create": "POST /api/hrm/v1/employees",
+    "employee_update": "PATCH /api/hrm/v1/employees/:id",
+    "employee_subordinates": "GET /api/hrm/v1/employees/:id/subordinates",
+    "employee_sync_crm": "POST /api/hrm/v1/employees/:id/sync-crm",
+    "org_chart": "GET /api/hrm/v1/employees/org-chart",
+    "departments_list": "GET /api/hrm/v1/departments",
+    "department_get": "GET /api/hrm/v1/departments/:id",
+    "department_create": "POST /api/hrm/v1/departments",
+    "department_update": "PATCH /api/hrm/v1/departments/:id",
+    "department_delete": "DELETE /api/hrm/v1/departments/:id",
+    "positions_list": "GET /api/hrm/v1/positions",
+    "position_create": "POST /api/hrm/v1/positions",
+    "position_update": "PATCH /api/hrm/v1/positions/:id",
+    "company_settings_get": "GET /api/hrm/v1/company-settings",
+    "company_settings_update": "PUT /api/hrm/v1/company-settings",
+    "company_payment_terms": "GET /api/hrm/v1/company-settings/payment-terms",
+    "webhook_crm_manager": "POST /api/hrm/v1/webhooks/crm-manager",
+    "health": "GET /api/hrm/v1/health",
+    "info": "GET /api/hrm/v1/info",
+    "ready": "GET /api/hrm/v1/ready"
+  },
+  "admin_endpoints": {
+    "base": "/api/hrm/v1/admin",
+    "description": "Административные маршруты для владельцев компании"
+  },
+  "integrations": {
+    "crm": "Синхронизация сотрудников как менеджеров в CRM",
+    "shop": "Привязка сотрудников к магазинам"
+  },
+  "database": {
+    "name": "hrm_db",
+    "schema": "hrm",
+    "tables": ["employees", "departments", "positions", "company_settings"],
+    "isolation_indexes": "Все таблицы индексированы по company_id и shop_id"
+  },
+  "config": {
+    "HRM_URL": "https://hrm.markbase.ru",
+    "HRM_PORT": 8068,
+    "HRM_API_KEY": "Выдаётся через Registry",
+    "HRM_HMAC_SECRET": "Выдаётся через Registry"
+  },
+  "compatibility": {
+    "platforms": ["javascript", "python", "php", "wordpress", "any"],
+    "min_version": "1.0.0"
+  }
+}

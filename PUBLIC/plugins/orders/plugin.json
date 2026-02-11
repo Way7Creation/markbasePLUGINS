@@ -1,0 +1,77 @@
+{
+  "name": "MarkBase Orders",
+  "slug": "orders",
+  "version": "1.0.0",
+  "description": "Закупки у поставщиков (RS24, ETM), управление заказами клиентов, выбор складов, пакетная обработка. Полная изоляция по shop_id.",
+  "author": "MarkBase",
+  "license": "MIT",
+  "homepage": "https://orders.markbase.ru",
+  "api_base": "https://orders.markbase.ru/api/orders/v1",
+  "port": 8085,
+  "category": "business",
+  "requires": ["uam", "registry"],
+  "provides": ["customer_orders", "supplier_orders", "warehouse_selection", "order_batching", "order_multiples", "specifications", "sbis_integration"],
+  "multi_tenant": {
+    "isolation": "shop_id",
+    "description": "Все заказы, конфигурации поставщиков и склады изолированы по shop_id. Каждый магазин управляет только своими закупками.",
+    "header": "X-Shop-Id",
+    "enforcement": "Все SQL-запросы содержат WHERE shop_id = $shop_id. Конфигурации поставщиков привязаны к shop_id.",
+    "api_keys_per_shop": true
+  },
+  "auth": {
+    "type": "uam_session + hmac",
+    "session_cookie": "uam_session",
+    "cookie_domain": ".markbase.ru",
+    "hmac_headers": ["X-Api-Key", "X-Timestamp", "X-Signature", "X-Shop-Id"],
+    "description": "Браузерные запросы авторизуются через uam_session cookie (SSO). Межмодульные запросы подписываются HMAC-SHA256."
+  },
+  "endpoints": {
+    "customer_orders_list": "GET /api/orders/v1/customer-orders",
+    "customer_order_get": "GET /api/orders/v1/customer-orders/:id",
+    "customer_order_create": "POST /api/orders/v1/customer-orders",
+    "customer_order_update": "PATCH /api/orders/v1/customer-orders/:id",
+    "supplier_orders_list": "GET /api/orders/v1/supplier-orders",
+    "supplier_order_get": "GET /api/orders/v1/supplier-orders/:id",
+    "supplier_order_create": "POST /api/orders/v1/supplier-orders",
+    "supplier_order_send": "POST /api/orders/v1/supplier-orders/:id/send",
+    "warehouses_list": "GET /api/orders/v1/warehouses",
+    "warehouse_create": "POST /api/orders/v1/warehouses",
+    "warehouse_update": "PATCH /api/orders/v1/warehouses/:id",
+    "specifications_list": "GET /api/orders/v1/specifications",
+    "specification_create": "POST /api/orders/v1/specifications",
+    "specification_get": "GET /api/orders/v1/specifications/:id",
+    "health": "GET /api/orders/v1/health",
+    "info": "GET /api/orders/v1/info",
+    "ready": "GET /api/orders/v1/ready"
+  },
+  "admin_endpoints": {
+    "base": "/api/orders/v1/admin",
+    "description": "Управление поставщиками, конфигурациями, API-ключами"
+  },
+  "suppliers": {
+    "rs24": "RS24 — электротехнический поставщик",
+    "etm": "ETM — электротехнический поставщик"
+  },
+  "integrations": {
+    "shop": "Получение заказов из Shop модуля",
+    "crm": "Синхронизация статусов заказов в CRM",
+    "logistics": "Отправка заказов в Logistics для доставки",
+    "sbis": "Интеграция с СБИС для документооборота"
+  },
+  "database": {
+    "name": "orders_db",
+    "schema": "orders",
+    "tables": ["customer_orders", "customer_order_items", "supplier_orders", "supplier_order_items", "warehouses", "supplier_configs", "product_mappings", "specifications", "outbox_events", "api_keys"],
+    "isolation_indexes": "Все таблицы индексированы по shop_id"
+  },
+  "config": {
+    "ORDERS_URL": "https://orders.markbase.ru",
+    "ORDERS_PORT": 8085,
+    "ORDERS_API_KEY": "Выдаётся через Registry",
+    "ORDERS_HMAC_SECRET": "Выдаётся через Registry"
+  },
+  "compatibility": {
+    "platforms": ["javascript", "python", "php", "wordpress", "any"],
+    "min_version": "1.0.0"
+  }
+}

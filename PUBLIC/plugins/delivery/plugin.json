@@ -1,0 +1,75 @@
+{
+  "name": "MarkBase Delivery",
+  "slug": "delivery",
+  "version": "1.0.0",
+  "description": "Интеграция с транспортными компаниями (CDEK, Деловые Линии, ПЭК). Расчёт тарифов, ПВЗ, отслеживание, QR-коды. Полная изоляция по shop_id.",
+  "author": "MarkBase",
+  "license": "MIT",
+  "homepage": "https://delivery.markbase.ru",
+  "api_base": "https://delivery.markbase.ru/api/delivery/v1",
+  "port": 8080,
+  "category": "logistics",
+  "requires": ["uam", "registry"],
+  "provides": ["tariff_calculation", "pickup_points", "shipment_creation", "tracking", "qr_codes", "multi_provider", "delivery_time_estimate"],
+  "multi_tenant": {
+    "isolation": "shop_id",
+    "description": "Все отправления и конфигурации провайдеров изолированы по shop_id. Каждый магазин управляет только своими доставками.",
+    "header": "X-Shop-Id",
+    "enforcement": "Все SQL-запросы содержат WHERE shop_id = $shop_id. Конфигурации провайдеров привязаны к shop_id.",
+    "api_keys_per_shop": true
+  },
+  "auth": {
+    "type": "uam_session + hmac",
+    "session_cookie": "uam_session",
+    "cookie_domain": ".markbase.ru",
+    "hmac_headers": ["X-Api-Key", "X-Timestamp", "X-Signature", "X-Shop-Id"],
+    "description": "Браузерные запросы авторизуются через uam_session cookie (SSO). Межмодульные запросы подписываются HMAC-SHA256."
+  },
+  "endpoints": {
+    "tariffs_calculate": "POST /api/delivery/v1/tariffs/calculate",
+    "cities": "GET /api/delivery/v1/cities",
+    "pickup_points": "GET /api/delivery/v1/pickup-points",
+    "shipment_create": "POST /api/delivery/v1/shipments",
+    "shipment_get": "GET /api/delivery/v1/shipments/:id",
+    "shipments_list": "GET /api/delivery/v1/shipments",
+    "shipment_tracking": "GET /api/delivery/v1/shipments/:id/tracking",
+    "shipment_qr": "GET /api/delivery/v1/shipments/:id/qr",
+    "delivery_time": "GET /api/delivery/v1/delivery-time",
+    "parse_qr": "POST /api/delivery/v1/parse-qr",
+    "webhook_provider": "POST /api/delivery/v1/webhooks/:provider",
+    "health": "GET /api/delivery/v1/health",
+    "info": "GET /api/delivery/v1/info",
+    "ready": "GET /api/delivery/v1/ready"
+  },
+  "admin_endpoints": {
+    "base": "/api/delivery/v1/admin",
+    "description": "Управление провайдерами, настройки доставки, аналитика"
+  },
+  "providers": {
+    "cdek": "СДЭК — курьерская доставка и ПВЗ",
+    "dellin": "Деловые Линии — грузовая доставка",
+    "pec": "ПЭК — грузовая доставка",
+    "yandex_delivery": "Яндекс.Доставка — экспресс и курьерская",
+    "russian_post": "Почта России — почтовая доставка"
+  },
+  "integrations": {
+    "logistics": "Создание отправлений по заказам из Logistics",
+    "shop": "Расчёт доставки при чекауте в Shop"
+  },
+  "database": {
+    "name": "delivery_db",
+    "schema": "delivery",
+    "tables": ["shipments", "pickup_points", "provider_configs", "tariff_cache", "webhooks_inbox"],
+    "isolation_indexes": "Все таблицы индексированы по shop_id"
+  },
+  "config": {
+    "DELIVERY_URL": "https://delivery.markbase.ru",
+    "DELIVERY_PORT": 8080,
+    "DELIVERY_API_KEY": "Выдаётся через Registry",
+    "DELIVERY_HMAC_SECRET": "Выдаётся через Registry"
+  },
+  "compatibility": {
+    "platforms": ["javascript", "python", "php", "wordpress", "any"],
+    "min_version": "1.0.0"
+  }
+}

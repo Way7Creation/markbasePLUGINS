@@ -1,0 +1,76 @@
+{
+  "name": "MarkBase Logistics",
+  "slug": "logistics",
+  "version": "1.0.0",
+  "description": "Управление заказами, отправлениями, возвратами, QR-кодами для выдачи. Полная изоляция данных по shop_id.",
+  "author": "MarkBase",
+  "license": "MIT",
+  "homepage": "https://logistics.markbase.ru",
+  "api_base": "https://logistics.markbase.ru/api/logistics/v1",
+  "port": 8090,
+  "category": "logistics",
+  "requires": ["uam", "registry", "delivery"],
+  "provides": ["order_management", "shipment_creation", "returns", "qr_pickup_codes", "status_tracking", "webhooks"],
+  "multi_tenant": {
+    "isolation": "shop_id",
+    "description": "Все заказы, отправления и возвраты изолированы по shop_id. Каждый магазин видит только свои логистические операции.",
+    "header": "X-Shop-Id",
+    "enforcement": "Все SQL-запросы содержат WHERE shop_id = $shop_id. Индексы для изоляции.",
+    "api_keys_per_shop": true
+  },
+  "auth": {
+    "type": "uam_session + hmac",
+    "session_cookie": "uam_session",
+    "cookie_domain": ".markbase.ru",
+    "hmac_headers": ["X-Api-Key", "X-Timestamp", "X-Signature", "X-Shop-Id"],
+    "description": "Браузерные запросы авторизуются через uam_session cookie (SSO). Межмодульные запросы подписываются HMAC-SHA256."
+  },
+  "endpoints": {
+    "order_create": "POST /api/logistics/v1/orders",
+    "orders_list": "GET /api/logistics/v1/orders",
+    "order_get": "GET /api/logistics/v1/orders/:id",
+    "order_status_update": "PATCH /api/logistics/v1/orders/:id/status",
+    "order_cancel": "POST /api/logistics/v1/orders/:id/cancel",
+    "order_ship": "POST /api/logistics/v1/orders/:order_id/ship",
+    "order_delivery_estimate": "PATCH /api/logistics/v1/orders/:id/delivery-estimate",
+    "order_return": "POST /api/logistics/v1/orders/:id/return",
+    "order_qr": "GET /api/logistics/v1/orders/:id/qr",
+    "order_pickup_qr": "GET /api/logistics/v1/orders/:id/pickup-qr",
+    "order_verify_code": "POST /api/logistics/v1/orders/:id/verify-code",
+    "pickup_verify_standalone": "POST /api/logistics/v1/pickup/verify",
+    "shipment_label": "GET /api/logistics/v1/shipments/:id/label",
+    "shipment_tracking": "GET /api/logistics/v1/shipments/:id/tracking",
+    "shipment_qr": "GET /api/logistics/v1/shipments/:id/qr",
+    "returns_list": "GET /api/logistics/v1/returns",
+    "return_get": "GET /api/logistics/v1/returns/:id",
+    "webhook_provider": "POST /api/logistics/v1/webhooks/:provider",
+    "health": "GET /api/logistics/v1/health",
+    "info": "GET /api/logistics/v1/info",
+    "ready": "GET /api/logistics/v1/ready"
+  },
+  "admin_endpoints": {
+    "base": "/api/logistics/v1/admin",
+    "description": "Управление логистикой: дашборд, настройки, статистика"
+  },
+  "integrations": {
+    "delivery": "Создание отправлений через Delivery модуль (CDEK, Dellin, PEC)",
+    "shop": "Получение заказов из Shop модуля",
+    "orders": "Синхронизация статусов с Orders модулем"
+  },
+  "database": {
+    "name": "logistics_db",
+    "schema": "logistics",
+    "tables": ["orders", "order_items", "shipments", "returns", "status_history", "pickup_codes", "webhooks_inbox"],
+    "isolation_indexes": "Все таблицы индексированы по shop_id"
+  },
+  "config": {
+    "LOGISTICS_URL": "https://logistics.markbase.ru",
+    "LOGISTICS_PORT": 8090,
+    "LOGISTICS_API_KEY": "Выдаётся через Registry",
+    "LOGISTICS_HMAC_SECRET": "Выдаётся через Registry"
+  },
+  "compatibility": {
+    "platforms": ["javascript", "python", "php", "wordpress", "any"],
+    "min_version": "1.0.0"
+  }
+}

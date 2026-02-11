@@ -1,0 +1,109 @@
+{
+  "name": "MarkBase Shop",
+  "slug": "shop",
+  "version": "1.0.2",
+  "description": "Мультитенантный интернет-магазин: каталог, корзина, чекаут (B2B/B2C), управление компаниями, шаблоны витрин, AI-поиск. Полная изоляция по shop_id.",
+  "author": "MarkBase",
+  "license": "MIT",
+  "homepage": "https://shop.markbase.ru",
+  "api_base": "https://shop.markbase.ru/api/shop/v1",
+  "port": 8020,
+  "category": "ecommerce",
+  "requires": ["uam", "registry"],
+  "provides": ["catalog", "cart", "checkout_b2b", "checkout_b2c", "customer_account", "company_management", "storefront_templates", "ai_search", "document_recognition", "telegram_bot"],
+  "multi_tenant": {
+    "isolation": "shop_id",
+    "description": "Полная изоляция по shop_id. Каждый магазин — отдельная витрина с каталогом, корзинами, заказами, шаблонами и настройками. Клиенты видят только свой магазин.",
+    "header": "X-Shop-Id",
+    "enforcement": "shopIdentificationMiddleware определяет shop_id из заголовка / домена / query. Все SQL-запросы содержат WHERE shop_id.",
+    "domains": "Поддержка кастомных доменов: *.shop.markbase.ru и собственные домены клиентов",
+    "api_keys_per_shop": true
+  },
+  "auth": {
+    "type": "uam_session + hmac",
+    "session_cookie": "uam_session",
+    "cookie_domain": ".markbase.ru",
+    "hmac_headers": ["X-Api-Key", "X-Timestamp", "X-Signature", "X-Shop-Id"],
+    "description": "Покупатели авторизуются через WaySenID (SSO). Межмодульные запросы подписываются HMAC-SHA256."
+  },
+  "endpoints": {
+    "catalog": "GET /api/shop/v1/catalog",
+    "product_get": "GET /api/shop/v1/products/:id",
+    "categories": "GET /api/shop/v1/categories",
+    "search": "GET /api/shop/v1/search",
+    "cart_get": "GET /api/shop/v1/cart",
+    "cart_add_item": "POST /api/shop/v1/cart/items",
+    "cart_update_item": "PATCH /api/shop/v1/cart/items/:item_id",
+    "cart_remove_item": "DELETE /api/shop/v1/cart/items/:item_id",
+    "cart_clear": "DELETE /api/shop/v1/cart",
+    "checkout_b2b": "POST /api/shop/v1/checkout/b2b",
+    "checkout_b2c": "POST /api/shop/v1/checkout/b2c",
+    "checkout_start": "POST /api/shop/v1/checkout",
+    "checkout_initiate": "POST /api/shop/v1/checkout/initiate",
+    "checkout_confirm": "POST /api/shop/v1/checkout/confirm",
+    "checkout_delivery_options": "POST /api/shop/v1/checkout/delivery-options",
+    "checkout_session_get": "GET /api/shop/v1/checkout/:session_id",
+    "checkout_session_update": "PATCH /api/shop/v1/checkout/:session_id",
+    "checkout_complete": "POST /api/shop/v1/checkout/:session_id/complete",
+    "orders_list": "GET /api/shop/v1/orders",
+    "order_get": "GET /api/shop/v1/orders/:order_id",
+    "order_cancel": "POST /api/shop/v1/orders/:order_id/cancel",
+    "order_to_invoice": "POST /api/shop/v1/orders/:id/to-invoice",
+    "me": "GET /api/shop/v1/me",
+    "my_orders": "GET /api/shop/v1/me/orders",
+    "my_order": "GET /api/shop/v1/me/orders/:order_id",
+    "my_addresses": "GET /api/shop/v1/me/addresses",
+    "my_address_add": "POST /api/shop/v1/me/addresses",
+    "pickup_points": "GET /api/shop/v1/pickup-points",
+    "companies_list": "GET /api/shop/v1/companies",
+    "company_create": "POST /api/shop/v1/companies",
+    "company_get": "GET /api/shop/v1/companies/:id",
+    "company_update": "PUT /api/shop/v1/companies/:id",
+    "company_invite": "POST /api/shop/v1/companies/:id/invite",
+    "company_accept_invite": "POST /api/shop/v1/companies/accept-invite",
+    "company_member_update": "PUT /api/shop/v1/companies/:id/members/:memberId",
+    "company_link_shop": "POST /api/shop/v1/companies/:id/shops/:shopId/link",
+    "document_upload": "POST /api/shop/v1/documents/upload",
+    "documents_list": "GET /api/shop/v1/documents",
+    "document_get": "GET /api/shop/v1/documents/:id",
+    "document_add_to_cart": "POST /api/shop/v1/documents/:id/add-to-cart",
+    "telegram_webhook": "POST /api/shop/v1/telegram/webhook/:app_id",
+    "health": "GET /api/shop/v1/health"
+  },
+  "admin_endpoints": {
+    "base": "/api/shop/v1/admin",
+    "description": "Управление магазином: домены, интеграции, шаблоны, диагностика, каталог"
+  },
+  "features": {
+    "b2b_checkout": "Корпоративные заказы с юридическими реквизитами, спецификациями, счетами",
+    "b2c_checkout": "Простые заказы для физлиц",
+    "ai_search": "Умный поиск через WayGPT AI с фоллбэком на PostgreSQL full-text",
+    "document_recognition": "AI-распознавание документов (PDF, Excel, фото) и автоматический подбор товаров",
+    "telegram_bot": "Telegram-бот для приёма заказов",
+    "storefront_templates": "Версионированные шаблоны витрин (HTML+CSS)"
+  },
+  "integrations": {
+    "orders": "Передача заказов в Orders модуль для закупок у поставщиков",
+    "crm": "Синхронизация клиентов и заказов в CRM",
+    "logistics": "Создание логистических заказов",
+    "delivery": "Расчёт тарифов доставки при чекауте",
+    "markbase": "Получение каталога товаров из MarkBase (app.markbase.ru)",
+    "waygpt": "AI-поиск и распознавание документов"
+  },
+  "database": {
+    "name": "shop_db",
+    "schema": "shop",
+    "tables": ["shops", "products_cache", "carts", "cart_items", "orders", "order_items", "customers", "customer_addresses", "checkout_sessions", "pickup_points", "domains", "templates", "companies", "company_members", "webhooks_inbox", "outbox_events"],
+    "isolation_indexes": "Все таблицы индексированы по shop_id"
+  },
+  "config": {
+    "SHOP_URL": "https://shop.markbase.ru",
+    "SHOP_PORT": 8020,
+    "SHOP_API_KEY": "Выдаётся через Registry",
+    "SHOP_HMAC_SECRET": "Выдаётся через Registry"
+  },
+  "compatibility": {
+    "platforms": ["javascript", "python", "php", "wordpress", "any"],
+    "min_version": "1.0.0"
+  }
+}
