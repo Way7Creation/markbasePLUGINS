@@ -56,7 +56,14 @@
     "shop": "Получение заказов из Shop модуля",
     "crm": "Синхронизация статусов заказов в CRM",
     "logistics": "Отправка заказов в Logistics для доставки",
-    "sbis": "Интеграция с СБИС для документооборота"
+    "sbis": "Интеграция с СБИС для документооборота",
+    "files": "Аватарки пользователей из FILES модуля, документы заказов"
+  },
+  "avatar": {
+    "source": "FILES module (files.markbase.ru)",
+    "endpoint_used": "GET /api/files/v1/avatar/user/:userId (публичный)",
+    "display": "Header — профиль пользователя (img с fallback на цветной кружок)",
+    "auth_me": "GET /api/auth/me возвращает avatar_url полученный из FILES"
   },
   "database": {
     "name": "orders_db",

@@ -64,7 +64,14 @@
     "shop": "Получает данные о заказах через webhook",
     "orders": "Получает обновления статусов заказов",
     "hrm": "Синхронизация менеджеров из HRM модуля",
-    "delivery": "Статусы доставки через webhook"
+    "delivery": "Статусы доставки через webhook",
+    "files": "Аватарки пользователей и контактов из FILES модуля (GET /api/files/v1/avatar/user/:userId)"
+  },
+  "avatar": {
+    "source": "FILES module (files.markbase.ru)",
+    "endpoint_used": "GET /api/files/v1/avatar/user/:userId (публичный, без auth)",
+    "display": "Header — профиль пользователя (img с fallback на цветной кружок)",
+    "auth_me": "GET /api/auth/me возвращает avatar_url полученный из FILES"
   },
   "database": {
     "name": "crm_db",

@@ -1,0 +1,228 @@
+{
+  "name": "MarkBase Files",
+  "slug": "files",
+  "version": "3.1.0",
+  "description": "Полноценная галерея и файловое хранилище с редактированием. Загрузка, кадрирование, ресайз, конвертация форматов. Единые аватарки и логотипы компаний для всей экосистемы. Связи файлов с сущностями (entity links). Дефолтные изображения для товаров. File Picker для встраивания в модули. Мультитенантная изоляция. Массовая загрузка, автогенерация миниатюр, защита от вредоносных файлов.",
+  "author": "MarkBase",
+  "license": "MIT",
+  "homepage": "https://files.markbase.ru",
+  "api_base": "https://files.markbase.ru/api/files/v1",
+  "port": 8095,
+  "category": "storage",
+  "requires": ["uam", "registry"],
+  "provides": [
+    "file_upload",
+    "file_upload_multiple",
+    "image_processing",
+    "thumbnails",
+    "auto_resize",
+    "file_storage",
+    "file_management",
+    "gallery",
+    "folders",
+    "avatars",
+    "icons",
+    "banners",
+    "quotas",
+    "service_upload"
+  ],
+  "multi_tenant": {
+    "isolation": "owner_module + owner_id",
+    "description": "Файлы изолированы по owner_module (shop, crm, hrm, user) и owner_id (shop_id, company_id, user_id). Каждый владелец имеет доступ только к своим файлам. Папки на диске: uploads/{module}/{ownerId}/{category}/",
+    "header": "X-Owner-Module + X-Owner-Id",
+    "enforcement": "SQL-запросы фильтруются по owner_module + owner_id. Файлы на диске организованы по модулю и владельцу.",
+    "api_keys_per_shop": true,
+    "quotas": "5GB на владельца по умолчанию, настраивается через Admin API"
+  },
+  "auth": {
+    "type": "uam_session + hmac",
+    "session_cookie": "uam_session",
+    "cookie_domain": ".markbase.ru",
+    "hmac_headers": ["X-Api-Key", "X-Timestamp", "X-Signature"],
+    "description": "Браузерные запросы авторизуются через uam_session cookie (SSO). Межмодульные запросы подписываются HMAC-SHA256."
+  },
+  "endpoints": {
+    "upload": "POST /api/files/v1/upload",
+    "upload_multiple": "POST /api/files/v1/upload/multiple",
+    "upload_bulk": "POST /api/files/v1/upload/bulk — массовая загрузка до 20 файлов",
+    "avatar_upload": "POST /api/files/v1/avatar",
+    "files_list": "GET /api/files/v1/files",
+    "file_get": "GET /api/files/v1/files/:id",
+    "file_update": "PATCH /api/files/v1/files/:id",
+    "file_download": "GET /api/files/v1/files/:id/download",
+    "file_thumbnail": "GET /api/files/v1/files/:id/thumbnail",
+    "file_delete": "DELETE /api/files/v1/files/:id",
+    "file_crop": "POST /api/files/v1/files/:id/crop — кадрирование (left, top, width, height)",
+    "file_resize": "POST /api/files/v1/files/:id/resize — ресайз (width, height, fit)",
+    "file_ratio": "POST /api/files/v1/files/:id/ratio — соотношение (1:1, 4:3, 16:9, 3:2)",
+    "file_convert": "POST /api/files/v1/files/:id/convert — конвертация (webp, jpeg, png, avif)",
+    "file_meta": "GET /api/files/v1/files/:id/meta — метаданные изображения",
+    "gallery": "GET /api/files/v1/gallery/:entityType/:entityId",
+    "avatar_my": "GET /api/files/v1/avatar/me — моя аватарка (auth)",
+    "avatar_user": "GET /api/files/v1/avatar/user/:userId — аватарка по userId (публичный, кэшируемый)",
+    "defaults_get": "GET /api/files/v1/defaults/:ownerModule/:ownerId — дефолтные изображения",
+    "defaults_upload": "POST /api/files/v1/defaults — загрузить дефолтное изображение",
+    "picker": "GET /api/files/v1/picker — File Picker для выбора из галереи",
+    "folders_list": "GET /api/files/v1/folders",
+    "folder_create": "POST /api/files/v1/folders",
+    "folder_update": "PATCH /api/files/v1/folders/:id",
+    "folder_delete": "DELETE /api/files/v1/folders/:id",
+    "service_upload": "POST /api/files/v1/service/upload",
+    "service_upload_bulk": "POST /api/files/v1/service/upload/bulk",
+    "service_files": "GET /api/files/v1/service/files",
+    "service_gallery": "GET /api/files/v1/service/gallery/:entityType/:entityId",
+    "service_defaults": "GET /api/files/v1/service/defaults/:ownerModule/:ownerId",
+    "service_avatar_upload": "POST /api/files/v1/service/avatar — загрузить аватарку из другого модуля",
+    "service_avatar_get": "GET /api/files/v1/service/avatar/:userId — получить аватарку",
+    "service_crop": "POST /api/files/v1/service/files/:id/crop",
+    "service_resize": "POST /api/files/v1/service/files/:id/resize",
+    "company_logo_upload": "POST /api/files/v1/company/:companyId/logo — загрузить логотип компании",
+    "company_logo_get": "GET /api/files/v1/company/:companyId/logo — получить логотип (публичный, кэшируемый)",
+    "entity_link_create": "POST /api/files/v1/entity-link — привязать файл к сущности",
+    "entity_links_get": "GET /api/files/v1/entity-links/:module/:type/:entityId — файлы сущности",
+    "entity_link_delete": "DELETE /api/files/v1/entity-link/:linkId — отвязать файл",
+    "service_company_logo_upload": "POST /api/files/v1/service/company/:companyId/logo",
+    "service_company_logo_get": "GET /api/files/v1/service/company/:companyId/logo",
+    "service_entity_link_create": "POST /api/files/v1/service/entity-link",
+    "service_entity_links_get": "GET /api/files/v1/service/entity-links/:module/:type/:entityId",
+    "admin_stats": "GET /api/files/v1/admin/stats",
+    "admin_quotas": "GET /api/files/v1/admin/quotas",
+    "admin_api_keys": "GET /api/files/v1/admin/api-keys",
+    "health": "GET /api/files/v1/health",
+    "info": "GET /api/files/v1/info",
+    "ready": "GET /api/files/v1/ready"
+  },
+  "picker": {
+    "description": "File Picker — встраиваемый выбор файлов через iframe",
+    "url": "https://files.markbase.ru/picker",
+    "params": "mode=select, category=product, multiple=true, mime=image/, owner_module=shop, owner_id=UUID",
+    "communication": "postMessage: { type: 'files:selected', files: [...] } / { type: 'files:cancelled' }"
+  },
+  "image_operations": {
+    "description": "Неразрушающее редактирование: оригинал сохраняется, создаётся новая версия",
+    "operations": ["crop", "resize", "ratio", "convert"],
+    "supported_ratios": ["1:1", "4:3", "3:4", "16:9", "9:16", "3:2", "2:3", "21:9"],
+    "supported_formats": ["webp", "jpeg", "png", "avif"],
+    "option_save_as_new": "save_as_new=true — сохранить как новый файл (оригинал остаётся)"
+  },
+  "avatar_system": {
+    "description": "Единый источник аватарок для всей экосистемы MarkBase",
+    "flow": [
+      "1. Пользователь загружает аватарку через app.markbase.ru (POST /api/auth/upload/avatar)",
+      "2. Main backend сохраняет локально И синхронизирует в FILES (POST /service/avatar)",
+      "3. FILES создаёт запись в files.files с category=avatar + trigger обновляет files.avatar_links",
+      "4. Все модули (Shop, CRM, HRM, Orders) запрашивают аватарку через GET /api/files/v1/avatar/user/:userId",
+      "5. Endpoint публичный (без auth), кэшируется 5 минут (Cache-Control: max-age=300)",
+      "6. Каждый модуль при /api/auth/me возвращает avatar_url, полученный из FILES"
+    ],
+    "endpoints": {
+      "upload": "POST /api/files/v1/avatar — загрузить аватарку (auth, auto: category=avatar, is_public=true)",
+      "get_my": "GET /api/files/v1/avatar/me — моя аватарка (auth)",
+      "get_user": "GET /api/files/v1/avatar/user/:userId — аватарка по userId (публичный)",
+      "service_upload": "POST /api/files/v1/service/avatar — загрузить из другого модуля (HMAC)"
+    },
+    "db_tables": {
+      "avatar_links": "files.avatar_links (user_id PK, file_id, avatar_url, thumbnail_url)",
+      "trigger": "trg_avatar_sync — при INSERT в files.files с category=avatar обновляет avatar_links"
+    },
+    "thumbnail": "150x150 px, автогенерация при загрузке"
+  },
+  "company_logo_system": {
+    "description": "Единый логотип компании для всей экосистемы MarkBase",
+    "flow": [
+      "1. Компания загружает логотип через app.markbase.ru или auth.markbase.ru",
+      "2. Файл сохраняется в FILES (POST /company/:companyId/logo) с owner_module=company",
+      "3. Триггер trg_company_logo_sync обновляет files.company_logo_links",
+      "4. Все модули могут получить логотип через GET /company/:companyId/logo (публичный, кэшируемый)",
+      "5. Логотип также доступен через settings.branding.logo_url в компании"
+    ],
+    "endpoints": {
+      "upload": "POST /api/files/v1/company/:companyId/logo (auth)",
+      "get": "GET /api/files/v1/company/:companyId/logo (публичный)",
+      "service_upload": "POST /api/files/v1/service/company/:companyId/logo (HMAC)"
+    },
+    "db_tables": {
+      "company_logo_links": "files.company_logo_links (company_id PK, file_id, logo_url, thumbnail_url)",
+      "trigger": "trg_company_logo_sync — при INSERT с category=logo и owner_module=company"
+    }
+  },
+  "entity_links": {
+    "description": "Универсальная привязка файлов к сущностям (товар, клиент, сотрудник, заказ и т.д.)",
+    "table": "files.entity_links",
+    "fields": {
+      "entity_module": "shop, crm, hrm, orders, company",
+      "entity_type": "product, client, employee, order, company, user, document",
+      "entity_id": "UUID или ID сущности",
+      "link_type": "avatar, logo, image, document, certificate, attachment"
+    },
+    "view": "files.entity_files — JOIN entity_links + files для удобной выборки",
+    "usage": "Позволяет отслеживать какой файл к какой сущности привязан, отображать в галерее, сопоставлять"
+  },
+  "upload_security": {
+    "description": "Защита загрузок: валидация MIME, magic bytes, блокировка опасных типов, санитизация имен",
+    "blocked_extensions": [".exe", ".bat", ".cmd", ".sh", ".php", ".jsp", ".asp", ".py", ".dll", ".ps1"],
+    "svg_protection": "SVG проверяется на XSS (script, onclick, iframe, object, embed)",
+    "magic_bytes": "Сигнатура файла проверяется для изображений (JPEG, PNG, GIF, WebP, BMP, TIFF, PDF, ZIP)"
+  },
+  "categories": {
+    "avatar": "Аватарки пользователей, контактов",
+    "icon": "Иконки, favicons",
+    "product": "Изображения товаров",
+    "gallery": "Альбомы, галерея",
+    "banner": "Баннеры, шапки",
+    "logo": "Логотипы компаний, брендов",
+    "document": "PDF, Word, Excel",
+    "attachment": "Общие вложения (по умолчанию)",
+    "signature": "Электронные подписи",
+    "seal": "Печати",
+    "branding": "Брендирование",
+    "import": "Файлы импорта (CSV, Excel)",
+    "export": "Файлы экспорта",
+    "temp": "Временные файлы"
+  },
+  "storage": {
+    "backend": "local_filesystem",
+    "upload_dir": "/app/uploads",
+    "structure": "uploads/{owner_module}/{owner_id}/{category}/{uuid_filename.ext}",
+    "max_file_size_bytes": 52428800,
+    "max_image_width": 4096,
+    "max_image_height": 4096,
+    "thumbnail_width": 300,
+    "thumbnail_height": 300,
+    "supported_image_formats": ["jpeg", "jpg", "png", "gif", "webp", "svg", "ico", "bmp", "avif", "heic"],
+    "supported_document_formats": ["pdf", "doc", "docx", "xls", "xlsx", "pptx", "csv", "txt", "md", "json", "xml", "zip", "rar", "gz"],
+    "public_url_pattern": "https://files.markbase.ru/uploads/{module}/{ownerId}/{category}/{filename}",
+    "caching": "90 дней для изображений, immutable"
+  },
+  "integrations": {
+    "shop": "Изображения товаров, документы заказов, аватарки клиентов, логотипы магазинов",
+    "crm": "Документы клиентов, прикреплённые файлы, аватарки контактов",
+    "orders": "Спецификации, накладные, акты, товарные фото",
+    "hrm": "Документы сотрудников, аватарки, подписи",
+    "app": "Общие загрузки, импорт/экспорт, брендирование"
+  },
+  "database": {
+    "name": "files_db",
+    "schema": "files",
+    "tables": ["files", "folders", "quotas", "api_keys", "avatar_links", "company_logo_links", "entity_links", "transformations"],
+    "views": ["default_images", "entity_files"],
+    "triggers": ["trg_avatar_sync", "trg_company_logo_sync"],
+    "isolation_indexes": "idx_files_owner (owner_module, owner_id), idx_files_entity (entity_type, entity_id)"
+  },
+  "config": {
+    "FILES_URL": "https://files.markbase.ru",
+    "FILES_PORT": 8095,
+    "FILES_API_KEY": "Выдаётся через Registry или задаётся в .env",
+    "FILES_HMAC_SECRET": "Выдаётся через Registry или задаётся в .env",
+    "FILES_PUBLIC_URL": "https://files.markbase.ru/uploads"
+  },
+  "rate_limiting": {
+    "general": "100 req/min per IP",
+    "upload": "30 req/min per IP",
+    "download": "200 req/min per IP"
+  },
+  "compatibility": {
+    "platforms": ["javascript", "python", "php", "wordpress", "any"],
+    "min_version": "1.0.0"
+  }
+}

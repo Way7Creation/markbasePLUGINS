@@ -1,8 +1,8 @@
 {
   "name": "MarkBase HRM",
   "slug": "hrm",
-  "version": "1.0.0",
-  "description": "Управление сотрудниками, отделами, должностями и настройками компании. Полная изоляция данных по company_id/shop_id.",
+  "version": "2.0.0",
+  "description": "Управление сотрудниками, отделами, должностями, гранулярными правами доступа и настройками компании. Система шаблонов прав с подтверждением и аудитом. Привязка компаний к магазинам. Полная изоляция данных по company_id/shop_id.",
   "author": "MarkBase",
   "license": "MIT",
   "homepage": "https://hrm.markbase.ru",
@@ -10,7 +10,7 @@
   "port": 8068,
   "category": "business",
   "requires": ["uam", "registry"],
-  "provides": ["employee_management", "department_hierarchy", "position_management", "company_settings", "kpi_tracking", "crm_sync"],
+  "provides": ["employee_management", "department_hierarchy", "position_management", "company_settings", "kpi_tracking", "crm_sync", "granular_permissions", "permission_templates", "permission_audit", "company_shop_links"],
   "multi_tenant": {
     "isolation": "company_id + shop_id",
     "description": "Все данные изолированы по company_id и shop_id. Каждая компания управляет только своими сотрудниками, отделами и настройками.",
@@ -45,6 +45,18 @@
     "company_settings_update": "PUT /api/hrm/v1/company-settings",
     "company_payment_terms": "GET /api/hrm/v1/company-settings/payment-terms",
     "webhook_crm_manager": "POST /api/hrm/v1/webhooks/crm-manager",
+    "perm_templates": "GET /api/hrm/v1/admin/permissions/templates — шаблоны прав",
+    "perm_template_create": "POST /api/hrm/v1/admin/permissions/templates — создать шаблон",
+    "perm_template_update": "PUT /api/hrm/v1/admin/permissions/templates/:id — обновить",
+    "perm_assign": "POST /api/hrm/v1/admin/permissions/assign — назначить права (с подтверждением)",
+    "perm_confirm": "POST /api/hrm/v1/admin/permissions/confirm/:id — подтвердить назначение",
+    "perm_reject": "POST /api/hrm/v1/admin/permissions/reject/:id — отклонить",
+    "perm_revoke": "POST /api/hrm/v1/admin/permissions/revoke/:id — отозвать права",
+    "perm_employee": "GET /api/hrm/v1/admin/permissions/employee/:id — права сотрудника",
+    "perm_pending": "GET /api/hrm/v1/admin/permissions/pending — ожидающие подтверждения",
+    "perm_audit": "GET /api/hrm/v1/admin/permissions/audit — журнал изменений",
+    "company_shops": "GET /api/hrm/v1/admin/permissions/company-shops — привязки магазинов",
+    "company_shop_link": "POST /api/hrm/v1/admin/permissions/company-shops — привязать магазин",
     "health": "GET /api/hrm/v1/health",
     "info": "GET /api/hrm/v1/info",
     "ready": "GET /api/hrm/v1/ready"
@@ -55,12 +67,40 @@
   },
   "integrations": {
     "crm": "Синхронизация сотрудников как менеджеров в CRM",
-    "shop": "Привязка сотрудников к магазинам"
+    "shop": "Привязка сотрудников к магазинам",
+    "files": "Аватарки сотрудников из FILES модуля (GET /api/files/v1/avatar/user/:userId)"
+  },
+  "avatar": {
+    "source": "FILES module (files.markbase.ru)",
+    "endpoint_used": "GET /api/files/v1/avatar/user/:userId (публичный)",
+    "display": "Header — профиль пользователя (img с fallback на цветной кружок)",
+    "auth_me": "GET /api/auth/me возвращает avatar_url полученный из FILES"
+  },
+  "permissions_system": {
+    "description": "Гранулярная система прав доступа с шаблонами, подтверждением и аудитом",
+    "flow": [
+      "1. Админ создаёт шаблон прав или использует системные (owner, director, admin, sales_manager, ...)",
+      "2. Назначает шаблон сотруднику (POST /permissions/assign)",
+      "3. Назначение получает статус 'pending' и ожидает подтверждения руководителя",
+      "4. Руководитель (owner/director) подтверждает (confirm) или отклоняет (reject)",
+      "5. После подтверждения права вступают в силу (middleware проверяет при каждом запросе)",
+      "6. Все изменения записываются в аудит-лог"
+    ],
+    "system_templates": ["owner", "director", "admin", "sales_manager", "procurement_manager", "warehouse_operator", "accountant", "viewer", "intern"],
+    "modules": ["shop", "crm", "hrm", "orders", "files", "delivery", "logistics", "billing", "settings"],
+    "actions": ["read", "write", "delete", "admin"],
+    "data_scope": ["own", "subordinates", "department", "all"],
+    "middleware": "requirePermission('module', 'action') — проверяет гранулярные права"
+  },
+  "company_shop_links": {
+    "description": "Привязка HRM-компании к магазинам Shop. Одна компания может управлять несколькими магазинами.",
+    "link_types": ["primary", "subsidiary", "partner"],
+    "table": "hrm.company_shop_links (company_id, shop_id, link_type, is_active)"
   },
   "database": {
     "name": "hrm_db",
     "schema": "hrm",
-    "tables": ["employees", "departments", "positions", "company_settings"],
+    "tables": ["employees", "departments", "positions", "company_settings", "employee_company_roles", "kpis", "api_keys", "permission_templates", "permission_assignments", "permission_audit_log", "company_shop_links"],
     "isolation_indexes": "Все таблицы индексированы по company_id и shop_id"
   },
   "config": {

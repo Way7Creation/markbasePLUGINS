@@ -1,8 +1,8 @@
 {
   "name": "MarkBase Shop",
   "slug": "shop",
-  "version": "1.0.2",
-  "description": "Мультитенантный интернет-магазин: каталог, корзина, чекаут (B2B/B2C), управление компаниями, шаблоны витрин, AI-поиск. Полная изоляция по shop_id.",
+  "version": "1.1.0",
+  "description": "Мультитенантный интернет-магазин: каталог, корзина, чекаут (B2B/B2C), управление компаниями, шаблоны витрин, AI-поиск, управление обработкой данных (152-ФЗ), подключение внешней БД. Полная изоляция по shop_id.",
   "author": "MarkBase",
   "license": "MIT",
   "homepage": "https://shop.markbase.ru",
@@ -10,7 +10,7 @@
   "port": 8020,
   "category": "ecommerce",
   "requires": ["uam", "registry"],
-  "provides": ["catalog", "cart", "checkout_b2b", "checkout_b2c", "customer_account", "company_management", "storefront_templates", "ai_search", "document_recognition", "telegram_bot"],
+  "provides": ["catalog", "cart", "checkout_b2b", "checkout_b2c", "customer_account", "company_management", "storefront_templates", "ai_search", "document_recognition", "telegram_bot", "data_governance", "external_db"],
   "multi_tenant": {
     "isolation": "shop_id",
     "description": "Полная изоляция по shop_id. Каждый магазин — отдельная витрина с каталогом, корзинами, заказами, шаблонами и настройками. Клиенты видят только свой магазин.",
@@ -63,6 +63,13 @@
     "company_accept_invite": "POST /api/shop/v1/companies/accept-invite",
     "company_member_update": "PUT /api/shop/v1/companies/:id/members/:memberId",
     "company_link_shop": "POST /api/shop/v1/companies/:id/shops/:shopId/link",
+    "data_governance_get": "GET /api/shop/v1/companies/:companyId/data-governance",
+    "data_governance_update": "PUT /api/shop/v1/companies/:companyId/data-governance",
+    "data_governance_test_db": "POST /api/shop/v1/companies/:companyId/data-governance/test-db",
+    "data_governance_passport_json": "GET /api/shop/v1/companies/:companyId/data-governance/passport",
+    "data_governance_passport_txt": "GET /api/shop/v1/companies/:companyId/data-governance/passport/txt",
+    "data_governance_audit": "GET /api/shop/v1/companies/:companyId/data-governance/audit",
+    "data_governance_public": "GET /api/shop/v1/companies/:companyId/data-governance/public",
     "document_upload": "POST /api/shop/v1/documents/upload",
     "documents_list": "GET /api/shop/v1/documents",
     "document_get": "GET /api/shop/v1/documents/:id",
@@ -82,18 +89,47 @@
     "telegram_bot": "Telegram-бот для приёма заказов",
     "storefront_templates": "Версионированные шаблоны витрин (HTML+CSS)"
   },
+  "data_governance": {
+    "description": "Управление обработкой персональных данных клиентов на уровне компании (152-ФЗ)",
+    "compliance": "ст. 18 ФЗ-152, ст. 9 ФЗ-152, Постановление Правительства РФ N 1119",
+    "storage_modes": {
+      "platform": "Данные хранятся на серверах платформы MarkBase",
+      "self_hosted": "Компания хостит свою БД для данных клиентов",
+      "hybrid": "Часть данных на платформе, часть на внешней БД"
+    },
+    "external_db": {
+      "description": "Подключение собственной PostgreSQL БД для хранения данных клиентов",
+      "auto_schema": "При подключении автоматически создаются таблицы customers и customer_consents",
+      "encryption": "Пароль БД шифруется AES-256 на стороне приложения",
+      "sync": "Синхронизация мета-данных с платформой, raw-данные остаются на сервере клиента"
+    },
+    "passport": {
+      "description": "Скачиваемый Паспорт обработки данных для Роскомнадзора и клиентов",
+      "formats": ["JSON", "TXT (для печати)"],
+      "content": ["Оператор ПД", "Инфраструктура хранения", "Меры безопасности", "Цели обработки", "Сроки хранения", "Статистика согласий", "Надзорный орган"]
+    },
+    "admin_page": "/admin/dashboard/data-governance",
+    "public_api": "GET /api/shop/v1/companies/:companyId/data-governance/public — публичная информация о хранении данных"
+  },
   "integrations": {
     "orders": "Передача заказов в Orders модуль для закупок у поставщиков",
     "crm": "Синхронизация клиентов и заказов в CRM",
     "logistics": "Создание логистических заказов",
     "delivery": "Расчёт тарифов доставки при чекауте",
     "markbase": "Получение каталога товаров из MarkBase (app.markbase.ru)",
-    "waygpt": "AI-поиск и распознавание документов"
+    "waygpt": "AI-поиск и распознавание документов",
+    "files": "Аватарки, изображения товаров, документы — всё через FILES модуль. files-client.js для HMAC-загрузки."
+  },
+  "avatar": {
+    "source": "FILES module (files.markbase.ru)",
+    "endpoint_used": "GET /api/files/v1/avatar/user/:userId через files-client.getUserAvatar()",
+    "display": "Header — профиль пользователя (img с fallback на иконку user)",
+    "auth_me": "GET /api/auth/me возвращает avatar_url полученный из FILES через files-client"
   },
   "database": {
     "name": "shop_db",
     "schema": "shop",
-    "tables": ["shops", "products_cache", "carts", "cart_items", "orders", "order_items", "customers", "customer_addresses", "checkout_sessions", "pickup_points", "domains", "templates", "companies", "company_members", "webhooks_inbox", "outbox_events"],
+    "tables": ["shops", "products_cache", "carts", "cart_items", "orders", "order_items", "customers", "customer_addresses", "checkout_sessions", "pickup_points", "domains", "templates", "companies", "company_members", "webhooks_inbox", "outbox_events", "company_data_governance", "company_data_governance_audit", "company_customer_consents"],
     "isolation_indexes": "Все таблицы индексированы по shop_id"
   },
   "config": {

@@ -12,9 +12,9 @@
 |--------|--------|------|------|-------|----------|
 | [UAM (WaySenID)](./uam/) | 1.5.0 | `uam` | 8060 | `auth.markbase.ru` | Единая аутентификация, SSO, сессии, проверка email, многоуровневая защита |
 | [Captcha](./captcha/) | 1.1.0 | `captcha` | 8079 | `captcha.markbase.ru` | Защита форм от ботов, Яндекс SmartCaptcha, fail-open стратегия |
-| [Registry](./registry/) | 1.0.0 | `registry` | 8065 | `registry.markbase.ru` | Каталог модулей, API-ключи, HMAC |
+| [Registry](./registry/) | 1.1.0 | `registry` | 8065 | `registry.markbase.ru` | Каталог модулей, API-ключи, HMAC |
 | [Security](./security/) | 1.1.0 | `security` | 8061 | `security.markbase.ru` | Rate limiting, IP-фильтрация, аудит |
-| [Monitoring](./monitoring/) | 1.0.0 | `monitoring` | — | `monitoring.markbase.ru` | Health checks, метрики, алерты |
+| [Monitoring](./monitoring/) | 1.0.0 | `monitoring` | 8063 | `monitoring.markbase.ru` | Health checks, метрики, алерты |
 | [Billing](./billing/) | 1.0.0 | `billing` | 8069 | `billing.markbase.ru` | Тарифы, подписки, лимиты |
 | [Wallet](./wallet/) | 1.0.0 | `wallet` | 8070 | `wallet.markbase.ru` | Балансы, транзакции, платежи |
 | [Docker Performance](./docker-performance/) | 1.0.0 | `docker-performance` | — | — | Оптимизация Docker-сборки React/Node.js |
@@ -27,6 +27,12 @@
 | [HRM](./hrm/) | 1.0.0 | `hrm` | 8068 | `hrm.markbase.ru` | Управление сотрудниками, отделами, должностями |
 | [Orders](./orders/) | 1.0.0 | `orders` | 8085 | `orders.markbase.ru` | Закупки у поставщиков (RS24, ETM), спецификации |
 | [Shop](./shop/) | 1.0.2 | `shop` | 8020 | `shop.markbase.ru` | Интернет-магазин: каталог, корзина, B2B/B2C чекаут, AI-поиск |
+
+### Файлы и хранение
+
+| Модуль | Версия | Slug | Порт | Домен | Описание |
+|--------|--------|------|------|-------|----------|
+| [Files](./files/) | 1.0.0 | `files` | 8095 | `files.markbase.ru` | Загрузка, хранение, обработка файлов (изображения, документы) |
 
 ### Логистика
 
@@ -104,23 +110,33 @@
 
 ## Подключение из внешних проектов
 
-Все модули ядра работают в одном Docker-стеке (`waysen_core`). Внешние проекты подключаются через **публичные URL**.
+Модули работают в **двух Docker-стеках** на разных серверах. Внешние проекты подключаются через **публичные URL**.
 
-| Модуль | URL для внешних проектов | URL внутри ядра (Docker) |
-|--------|--------------------------|--------------------------|
+**Сервер 1 — waysen_core (ядро):**
+
+| Модуль | Публичный URL | Docker-имя (внутри waysen_core) |
+|--------|---------------|--------------------------------|
 | UAM | `https://auth.markbase.ru` | `http://uam:8060` |
 | Captcha | `https://captcha.markbase.ru` | `http://captcha:8079` |
 | Registry | `https://registry.markbase.ru` | `http://registry:8065` |
-| Wallet | `https://wallet.markbase.ru` | `http://wallet:8070` |
+| Security | `https://security.markbase.ru` | `http://security:8061` |
+| Monitoring | `https://monitoring.markbase.ru` | `http://monitoring:8063` |
 | Billing | `https://billing.markbase.ru` | `http://billing:8069` |
-| CRM | `https://crm.markbase.ru` | `http://crm:8067` |
-| HRM | `https://hrm.markbase.ru` | `http://hrm:8068` |
-| Orders | `https://orders.markbase.ru` | `http://orders:8085` |
-| Shop | `https://shop.markbase.ru` | `http://shop:8020` |
-| Delivery | `https://delivery.markbase.ru` | `http://delivery:8080` |
-| Logistics | `https://logistics.markbase.ru` | `http://logistics:8090` |
+| Wallet | `https://wallet.markbase.ru` | `http://wallet:8070` |
 
-Docker-имена (`http://uam:8060`) работают **только** внутри стека `waysen_core`. Из внешних Docker-стеков или серверов — только публичные URL!
+**Сервер 2 — moduletrade.ru (коммерческие модули):**
+
+| Модуль | Публичный URL | Docker-имя (внутри markbaseru) |
+|--------|---------------|-------------------------------|
+| Shop | `https://shop.markbase.ru` | `http://shop-backend:8020` |
+| Orders | `https://orders.markbase.ru` | `http://orders-backend:8085` |
+| CRM | `https://crm.markbase.ru` | `http://crm-backend:8067` |
+| HRM | `https://hrm.markbase.ru` | `http://hrm-backend:8068` |
+| Delivery | `https://delivery.markbase.ru` | `http://delivery-backend:8080` |
+| Logistics | `https://logistics.markbase.ru` | `http://logistics-backend:8090` |
+| Files | `https://files.markbase.ru` | `http://files-backend:8095` |
+
+Docker-имена работают **только** внутри своего стека. Между серверами — только через публичные HTTPS URL!
 
 Что настроить на стороне внешнего проекта (CSP, credentials, return_url) — [MARKBASE_PLUGINS_OUR_SIDE.md](../MARKBASE_PLUGINS_OUR_SIDE.md).
 
@@ -130,26 +146,31 @@ Docker-имена (`http://uam:8060`) работают **только** внут
 
 ```
                   ┌──────────────────┐
-                  │   UAM (WaySenID) │
-                  │  auth.markbase.ru│
-                  └────────┬─────────┘
-                           │ SSO / Session
-        ┌──────────────────┼──────────────────┐
-        │                  │                  │
+                  │   UAM (WaySenID) │     ┌──────────┐
+                  │  auth.markbase.ru│     │ Registry │
+                  └────────┬─────────┘     │ API-ключи│
+                           │ SSO / Session └────┬─────┘
+        ┌──────────────────┼─────────────────────┤
+        │                  │                     │
    ┌────▼────┐       ┌────▼────┐       ┌────▼────┐
    │  Shop   │──────▶│ Orders  │       │   CRM   │
    │ Магазин │       │ Закупки │──────▶│ Клиенты │
-   └────┬────┘       └────┬────┘       └────▲────┘
-        │                 │                  │
-        │           ┌─────▼─────┐            │
-        └──────────▶│ Logistics │────────────┘
-                    │ Логистика │
-                    └─────┬─────┘
-                          │
-                    ┌─────▼─────┐       ┌─────────┐
-                    │ Delivery  │       │   HRM   │──▶ CRM
-                    │ Доставка  │       │   HR    │
-                    └───────────┘       └─────────┘
+   └──┬──┬───┘       └────┬────┘       └────▲────┘
+      │  │                │                  │
+      │  │          ┌─────▼─────┐            │
+      │  └─────────▶│ Logistics │────────────┘
+      │             │ Логистика │
+      │             └─────┬─────┘
+      │                   │
+      │             ┌─────▼─────┐       ┌─────────┐
+      │             │ Delivery  │       │   HRM   │──▶ CRM
+      │             │ Доставка  │       │   HR    │
+      │             └───────────┘       └─────────┘
+      │
+      │  ┌──────────┐
+      └─▶│  Files   │ ← все модули загружают файлы
+         │ Хранение │
+         └──────────┘
 ```
 
 ---

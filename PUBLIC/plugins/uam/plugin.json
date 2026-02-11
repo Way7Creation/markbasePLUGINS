@@ -1,8 +1,8 @@
 {
   "name": "MarkBase UAM (WaySenID)",
   "slug": "uam",
-  "version": "1.5.0",
-  "description": "Единая аутентификация через WaySenID. SSO, регистрация, интеллектуальная проверка email, запоминание аккаунтов, отказоустойчивый кэш, многоуровневая защита от brute-force, DDoS, IP-блокировка.",
+  "version": "2.1.0",
+  "description": "Единая аутентификация через WaySenID. SSO, регистрация с полноценным чтением согласий (152-ФЗ РФ), управление компаниями и участниками, загрузка аватарок, отзыв и выгрузка согласий, интеллектуальная проверка email, запоминание аккаунтов, отказоустойчивый кэш, многоуровневая защита от brute-force, DDoS, IP-блокировка.",
   "author": "MarkBase",
   "license": "MIT",
   "homepage": "https://auth.markbase.ru",
@@ -10,7 +10,8 @@
   "port": 8060,
   "category": "authentication",
   "requires": ["captcha"],
-  "provides": ["authentication", "session", "sso", "brute_force_protection", "rate_limiting", "ip_allowlist", "audit_log", "captcha_integration", "logout_redirect", "email_verification", "account_switcher"],
+  "integrations": ["files"],
+  "provides": ["authentication", "session", "sso", "brute_force_protection", "rate_limiting", "ip_allowlist", "audit_log", "captcha_integration", "logout_redirect", "email_verification", "account_switcher", "company_management", "avatar_upload", "consent_management", "consent_export_152fz"],
   "endpoints": {
     "check_email": "POST /api/uam/v1/check-email",
     "login": "POST /api/uam/v1/login",
@@ -41,6 +42,24 @@
     "security_protection_info": "GET /api/uam/v1/security/protection-info",
     "2fa_send": "POST /api/uam/v1/2fa/send [заглушка]",
     "2fa_verify": "POST /api/uam/v1/2fa/verify [заглушка]",
+    "companies_list": "GET /api/uam/v1/companies — список компаний пользователя (основная + подключённые)",
+    "company_details": "GET /api/uam/v1/companies/:id — реквизиты, банковские счета, подписи, печати, участники",
+    "company_legal_update": "PUT /api/uam/v1/companies/:id/legal — обновить реквизиты",
+    "company_members": "GET /api/uam/v1/companies/:id/members — участники компании",
+    "company_logo_upload": "POST /api/uam/v1/companies/:id/logo — загрузить логотип компании",
+    "avatar_upload": "POST /api/uam/v1/avatar — загрузить аватарку через FILES модуль",
+    "avatar_get": "GET /api/uam/v1/avatar — получить URL аватарки текущего пользователя",
+    "avatar_delete": "DELETE /api/uam/v1/avatar — удалить аватарку",
+    "consents_documents": "GET /api/uam/v1/consents/documents — юридические документы (публичный)",
+    "consents_requirements": "GET /api/uam/v1/consents/requirements — требуемые согласия по региону",
+    "consents_my": "GET /api/uam/v1/consents/my — мои согласия",
+    "consents_check": "GET /api/uam/v1/consents/check — проверка полноты согласий",
+    "consents_grant": "POST /api/uam/v1/consents/grant — принять согласие",
+    "consents_revoke_new": "POST /api/uam/v1/consents/revoke — отозвать с причиной, IP, user-agent",
+    "consents_export_json": "GET /api/uam/v1/consents/export — выгрузка JSON для Роскомнадзора (152-ФЗ, полные данные оператора/субъекта)",
+    "consents_export_text": "GET /api/uam/v1/consents/export/text — выгрузка TXT для печати и отправки почтой",
+    "consents_requisites_get": "GET /api/uam/v1/consents/requisites — реквизиты оператора ПД (публичный)",
+    "consents_requisites_update": "PUT /api/uam/v1/consents/requisites — обновить реквизиты (platform_admin)",
     "health": "GET /health"
   },
   "security": {
@@ -79,6 +98,90 @@
     "https_enforcement": true,
     "security_headers": ["HSTS", "X-Frame-Options", "X-XSS-Protection", "X-Content-Type-Options"]
   },
+  "avatar": {
+    "description": "Аватарки пользователей загружаются НАПРЯМУЮ через auth модуль (POST /avatar) или через app.markbase.ru. Хранение — в FILES модуле.",
+    "source": "FILES module (files.markbase.ru)",
+    "upload_flows": [
+      "1. Через auth.markbase.ru: POST /api/uam/v1/avatar → проксирует в FILES POST /api/files/v1/avatar",
+      "2. Через app.markbase.ru: POST /api/auth/upload/avatar → синхронизация в FILES POST /api/files/v1/service/avatar"
+    ],
+    "get_avatar": "GET /api/uam/v1/avatar или GET https://files.markbase.ru/api/files/v1/avatar/user/{userId}",
+    "delete_avatar": "DELETE /api/uam/v1/avatar → обновляет avatar_url=null в main backend",
+    "fallback": "Если аватарка отсутствует — модули показывают цветной кружок с первой буквой email/имени",
+    "supported_formats": ["image/jpeg", "image/png", "image/webp"],
+    "max_size": "5 МБ"
+  },
+  "companies": {
+    "description": "Управление компаниями пользователя через auth модуль. UAM проксирует запросы к main backend (app.markbase.ru) и FILES модулю.",
+    "features": [
+      "Список всех компаний пользователя (основная + подключённые)",
+      "Просмотр реквизитов: ИНН, КПП, ОГРН, юридический/фактический адрес, руководитель",
+      "Банковские счета: название банка, р/с, БИК",
+      "Участники компании: имя, email, роль, аватарка, статус",
+      "Документы: подписи, печати",
+      "Логотип компании: загрузка через FILES модуль"
+    ],
+    "proxy_to": "app.markbase.ru (main backend)",
+    "pages": {
+      "companies_list": "/account/companies — список компаний со статистикой",
+      "company_details": "Модальное окно с табами: Реквизиты, Участники, Документы"
+    },
+    "roles": {
+      "owner": "Владелец — полный доступ",
+      "admin": "Администратор — управление настройками",
+      "manager": "Менеджер — работа с данными",
+      "operator": "Оператор — ограниченный доступ",
+      "viewer": "Наблюдатель — только чтение"
+    },
+    "env_vars": {
+      "APP_BACKEND_URL": "URL main backend (по умолчанию https://app.markbase.ru)",
+      "FILES_PUBLIC_URL": "URL FILES модуля (по умолчанию https://files.markbase.ru)"
+    }
+  },
+  "consent_system": {
+    "description": "Полноценная система согласий по 152-ФЗ РФ. Каждый документ читается и принимается отдельно при регистрации.",
+    "legal_basis": "Федеральный закон от 27.07.2006 N 152-ФЗ \"О персональных данных\"",
+    "documents": [
+      {"type": "privacy_policy", "title": "Политика конфиденциальности и обработки ПД", "version": "2.0", "required": true},
+      {"type": "terms_of_service", "title": "Пользовательское соглашение (договор-оферта)", "version": "2.0", "required": true},
+      {"type": "personal_data_processing", "title": "Согласие на обработку персональных данных", "version": "2.0", "required": true},
+      {"type": "ecosystem_agreement", "title": "Договор присоединения к экосистеме MarkBase", "version": "1.0", "required": true},
+      {"type": "marketing_communications", "title": "Маркетинговые коммуникации", "required": false}
+    ],
+    "registration_flow": [
+      "1. При регистрации загружаются все документы (GET /consents/documents)",
+      "2. Пользователь обязан открыть и прочитать каждый обязательный документ",
+      "3. После прочтения — чекбокс для принятия становится активным",
+      "4. Кнопка 'Прочитано и принято' — автоматически отмечает прочтение и принятие",
+      "5. Регистрация невозможна без принятия всех обязательных согласий",
+      "6. Backend автоматически записывает: дату, IP-адрес, user-agent, версию документа"
+    ],
+    "revocation_flow": [
+      "1. В личном кабинете → Согласия → выбрать согласие → 'Отозвать'",
+      "2. Модалка с предупреждением по закону, поле причины отзыва",
+      "3. Фиксируется: дата отзыва, IP-адрес отзыва, user-agent, причина",
+      "4. Запись в аудит-лог",
+      "5. Проверка полноты согласий обновляется при /me и /session/validate"
+    ],
+    "export": {
+      "json": "GET /consents/export — полная выгрузка для Роскомнадзора (оператор, субъект, цели, шифрование, согласия)",
+      "text": "GET /consents/export/text — текстовый формат для печати и отправки почтой",
+      "content": "Полные реквизиты оператора, данные субъекта, цели обработки, категории ПД, меры защиты, сроки хранения, все согласия с IP/UA/датами"
+    },
+    "operator_requisites": {
+      "description": "Глобальные настройки реквизитов оператора ПД и серверной инфраструктуры. Подставляются во все юридические документы автоматически.",
+      "admin_page": "/account/admin/requisites (только platform_admin)",
+      "fields": ["company_name", "inn", "ogrn", "kpp", "legal_address", "actual_address", "phone", "email", "director_name", "director_position", "registration_number", "responsible_person", "data_center", "data_protection_level", "website", "hosting_provider", "hosting_provider_inn", "hosting_provider_url", "server_location_city", "server_location_country", "server_type", "data_center_tier", "data_center_certification", "backup_location", "encryption_transit", "encryption_storage", "encryption_passwords"],
+      "placeholders_in_docs": ["[указать полное наименование юридического лица]", "[указать ИНН]", "[указать ОГРН]", "[указать юридический адрес]", "[указать телефон]", "[указать email оператора]", "[указать ответственное лицо]", "[указать дата-центр]", "[указать номер реестровой записи]", "[указать хостинг-провайдера]", "[указать город сервера]", "[указать страну сервера]", "[указать тип сервера]", "[указать уровень дата-центра]", "[указать сертификацию дата-центра]"],
+      "infrastructure_section": {
+        "description": "Раздел 'Серверная инфраструктура' на странице реквизитов. При смене VPS-провайдера достаточно обновить данные здесь — все юридические документы обновятся автоматически.",
+        "default_provider": "Timeweb Cloud (timeweb.cloud) — Tier III, Москва, реестр российского ПО N 15725",
+        "compliance": "ст. 18 ФЗ-152 — персональные данные граждан РФ должны храниться на территории РФ"
+      }
+    },
+    "multi_region": ["RU (152-ФЗ)", "EU (GDPR)"],
+    "database_tables": ["uam.user_consents", "uam.consent_documents", "uam.consent_requirements", "uam.operator_requisites"]
+  },
   "account_switcher": {
     "description": "Переключение аккаунтов из шапки любого модуля. Обязательно для всех модулей. Без запроса пароля — если разрешено настройками целевого аккаунта и не истёк срок невхода.",
     "localStorage_keys": {
@@ -109,7 +212,9 @@
     "UAM_URL": "https://auth.markbase.ru",
     "UAM_SESSION_COOKIE": "uam_session",
     "UAM_COOKIE_DOMAIN": ".markbase.ru",
-    "UAM_SESSION_TTL_HOURS": 72
+    "UAM_SESSION_TTL_HOURS": 72,
+    "APP_BACKEND_URL": "URL main backend для проксирования запросов компаний",
+    "FILES_PUBLIC_URL": "URL FILES модуля для аватарок и логотипов"
   },
   "compatibility": {
     "platforms": ["javascript", "python", "php", "wordpress", "any"],
