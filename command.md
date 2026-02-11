@@ -17,22 +17,25 @@ ssh server-w7c-main              # w7c
 ============================================
 # ИНТЕРАКТИВНАЯ ПЕРЕСБОРКА (в проекте, куда подключены плагины)
 ============================================
-Выполнять из **корня того проекта**, где развёрнут стек (markbaseCORE, moduletrade.ru, aiserver, sererandpay). Команды везде одинаковые, меняется только путь:
+Выполнять из **корня того проекта**, где развёрнут стек (markbaseCORE, moduletrade.ru, aiserver, sererandpay). Команды везде одинаковые, меняется только путь.
+Скрипт АВТОМАТИЧЕСКИ: подтягивает код из git (fetch + reset --hard),
+собирает образы (с кэшем + pull свежих base-образов), запускает контейнеры.
+Локальные изменения на сервере перезаписываются — репозиторий = источник правды.
 
-# Полная пересборка БЕЗ удаления БД
+# Обычное обновление (99% случаев) — код из git, пересборка, миграции
 cd /var/www/<ПРОЕКТ>   # markbase.ru | markbasecore | waygpt.ru/aiserver | waysen
 sudo bash scripts/deployment/redeploy-interactive.sh
 
-# Синхронизировать .env из примера
+# Синхронизировать .env из примера (принудительно перезаписать)
 sudo bash scripts/deployment/redeploy-interactive.sh --sync-env
 
-# Полная очистка БД (требуется пароль root)
+# Очистка БД (требуется пароль root)
 sudo bash scripts/deployment/redeploy-interactive.sh --wipe
 
-# Очистка БД без дополнительного подтверждения (всё равно запрашивается root)
+# Очистка без подтверждения (всё равно запрашивается root)
 sudo bash scripts/deployment/redeploy-interactive.sh --wipe --yes-all
 
-# Пересборка без кеша
+# Без кеша Docker (МЕДЛЕННО! только если кэш Docker сломался — редчайший случай)
 sudo bash scripts/deployment/redeploy-interactive.sh --no-cache
 
 Подробные блоки по проектам: `markbaseCORE/commands.txt`, `moduletrade.ru/comand.txt`, `aiserver/command.md`, `sererandpay/command.md`.
