@@ -124,7 +124,7 @@
 | Billing | `https://billing.markbase.ru` | `http://billing:8069` |
 | Wallet | `https://wallet.markbase.ru` | `http://wallet:8070` |
 
-**Сервер 2 — moduletrade.ru (коммерческие модули):**
+**Сервер 2 — markbase.ru (коммерческие модули):**
 
 | Модуль | Публичный URL | Docker-имя (внутри markbaseru) |
 |--------|---------------|-------------------------------|

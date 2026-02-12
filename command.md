@@ -3,7 +3,7 @@
 ## Вход на сервер (SSH ключи, пароль отключён)
 ```powershell
 ssh server-root-main             # root (администратор)
-ssh server-waysen-main           # moduletrade.ru
+ssh server-waysen-main           # markbase.ru
 ssh server-waycore-main          # markbaseCORE
 ssh server-waypay-main           # sererandpay
 ssh server-w7c-main              # w7c
@@ -17,7 +17,7 @@ ssh server-w7c-main              # w7c
 ============================================
 # ИНТЕРАКТИВНАЯ ПЕРЕСБОРКА (в проекте, куда подключены плагины)
 ============================================
-Выполнять из **корня того проекта**, где развёрнут стек (markbaseCORE, moduletrade.ru, aiserver, sererandpay). Команды везде одинаковые, меняется только путь.
+Выполнять из **корня того проекта**, где развёрнут стек (markbaseCORE, markbase.ru, aiserver, sererandpay). Команды везде одинаковые, меняется только путь.
 Скрипт АВТОМАТИЧЕСКИ: подтягивает код из git (fetch + reset --hard),
 собирает образы (с кэшем + pull свежих base-образов), запускает контейнеры.
 Локальные изменения на сервере перезаписываются — репозиторий = источник правды.
@@ -38,7 +38,7 @@ sudo bash scripts/deployment/redeploy-interactive.sh --wipe --yes-all
 # Без кеша Docker (МЕДЛЕННО! только если кэш Docker сломался — редчайший случай)
 sudo bash scripts/deployment/redeploy-interactive.sh --no-cache
 
-Подробные блоки по проектам: `markbaseCORE/commands.txt`, `moduletrade.ru/comand.txt`, `aiserver/command.md`, `sererandpay/command.md`.
+Подробные блоки по проектам: `markbaseCORE/commands.txt`, `markbase.ru/comand.txt`, `aiserver/command.md`, `sererandpay/command.md`.
 
 ---
 
