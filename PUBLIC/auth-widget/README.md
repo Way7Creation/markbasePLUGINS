@@ -14,6 +14,7 @@
 | **README.md** (этот файл) | Обзор, кнопка, OAuth endpoints, SDK, UI-компоненты |
 | **[INTEGRATION.md](./INTEGRATION.md)** | Полное руководство: lifecycle, backend-код, схема БД, безопасность |
 | **[ONETAP.md](./ONETAP.md)** | One Tap — автоматическое предложение входа, session detection |
+| **[WAYSENID_LOGIN_AS.md](../WAYSENID_LOGIN_AS.md)** | Подключение как модуль: проект с **собственной регистрацией** — одна кнопка «Войти как», передача данных (cookie / wsid_code) |
 | **[waysenid.css](./waysenid.css)** | Ready-to-use CSS для кнопки и формы (CDN / npm) |
 | **[plugin.json](./plugin.json)** | Метаданные спецификации |
 

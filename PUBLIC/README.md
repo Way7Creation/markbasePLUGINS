@@ -46,6 +46,12 @@
 
 > Подробнее: [auth-widget/README.md](./auth-widget/README.md)
 
+**Единый вход во всех модулях markbase.ru (app, shop, delivery и т.д.):** только кнопка «Войти через WaySenID», открытие auth в popup, без своих форм входа/регистрации и капчи. Все настройки капчи — в панели captcha.markbase.ru.  
+→ [MARKBASE_MODULES_AUTH.md](./MARKBASE_MODULES_AUTH.md)
+
+**Проекты с собственной регистрацией («Войти как»):** добавить кнопку «Войти через WaySenID» рядом с «Войти через Google» / «Яндекс» — один модуль, корректная передача данных (cookie на \*.markbase.ru или wsid_code + exchange-code на стороннем домене).  
+→ [WAYSENID_LOGIN_AS.md](./WAYSENID_LOGIN_AS.md)
+
 ---
 
 ### 2. API-плагины модулей
