@@ -197,3 +197,21 @@ SHOP_URL=http://shop:8020
 # Из внешних проектов
 SHOP_URL=https://shop.markbase.ru
 ```
+
+---
+
+## UI Compliance (Header v1.1.0)
+
+Если модуль имеет web-интерфейс с аккаунт-меню в правом верхнем углу, обязательно соблюдается единый стандарт экосистемы:
+
+- профиль (имя + email)
+- баланс кошелька из `https://billing.markbase.ru/api/billing/balance`
+- пункты: аккаунт/безопасность, уведомления, кошелек, тарифы/биллинг, помощь, выход
+- переходы на другие поддомены помечаются тегом `внешняя`
+
+Источник стандарта:
+
+- `markbaseCORE/INTEGRATION/MARKBASE/design/HEADER.md`
+- `markbaseCORE/INTEGRATION/MARKBASE/design/header.json`
+- `markbaseCORE/INTEGRATION/MARKBASE/design/HEADER_CHECKLIST.md`
+

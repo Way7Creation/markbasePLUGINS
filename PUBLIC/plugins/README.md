@@ -59,6 +59,24 @@
 6. **Отказоустойчивость** — кэш сессий UAM на каждом модуле
 7. **Мультитенантность** — полная изоляция данных по `shop_id` / `company_id`
 
+## UI-стандарт для аккаунт-меню (обязательно для модулей с web UI)
+
+Если модуль имеет интерфейс с профилем пользователя в шапке, используется единый dropdown:
+
+- Профиль (имя + email)
+- Баланс кошелька (`billing.markbase.ru/api/billing/balance`)
+- Ссылки:
+  - `Аккаунт и безопасность` (`auth.markbase.ru`)
+  - `Центр уведомлений` (`notifications.markbase.ru`)
+  - `Кошелек и платежи` (`wallet.markbase.ru`)
+  - `Тарифы и биллинг` (`billing.markbase.ru`)
+  - `Помощь и документация` (`help.markbase.ru`)
+  - `Выйти`
+
+Любая ссылка на другой поддомен отмечается меткой `внешняя`.
+
+Источник спецификации: `markbaseCORE/INTEGRATION/MARKBASE/design/HEADER.md` (`header.json`).
+
 ---
 
 ## Мультитенантная изоляция
@@ -225,3 +243,21 @@ curl https://shop.markbase.ru/api/shop/v1/catalog?shop_id=YOUR_SHOP_ID \
 - **Python** — pip пакет (планируется)
 - **PHP / WordPress** — WP-плагин (в каждом модуле есть пример)
 - **REST API** — любая платформа через HTTP
+
+---
+
+## UI Compliance (Header v1.1.0)
+
+Если модуль имеет web-интерфейс с аккаунт-меню в правом верхнем углу, обязательно соблюдается единый стандарт экосистемы:
+
+- профиль (имя + email)
+- баланс кошелька из `https://billing.markbase.ru/api/billing/balance`
+- пункты: аккаунт/безопасность, уведомления, кошелек, тарифы/биллинг, помощь, выход
+- переходы на другие поддомены помечаются тегом `внешняя`
+
+Источник стандарта:
+
+- `markbaseCORE/INTEGRATION/MARKBASE/design/HEADER.md`
+- `markbaseCORE/INTEGRATION/MARKBASE/design/header.json`
+- `markbaseCORE/INTEGRATION/MARKBASE/design/HEADER_CHECKLIST.md`
+

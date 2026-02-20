@@ -46,10 +46,10 @@
 
 > Подробнее: [auth-widget/README.md](./auth-widget/README.md)
 
-**Единый вход во всех модулях markbase.ru (app, shop, delivery и т.д.):** только кнопка «Войти через WaySenID», открытие auth в popup, без своих форм входа/регистрации и капчи. Все настройки капчи — в панели captcha.markbase.ru.  
+**Единый вход во всех модулях markbase.ru (app, shop, delivery и т.д.):** только кнопка «Войти через WaySenID», открытие auth в popup, без своих форм входа/регистрации и капчи. Все настройки капчи — в панели captcha.markbase.ru.
 → [MARKBASE_MODULES_AUTH.md](./MARKBASE_MODULES_AUTH.md)
 
-**Проекты с собственной регистрацией («Войти как»):** добавить кнопку «Войти через WaySenID» рядом с «Войти через Google» / «Яндекс» — один модуль, корректная передача данных (cookie на \*.markbase.ru или wsid_code + exchange-code на стороннем домене).  
+**Проекты с собственной регистрацией («Войти как»):** добавить кнопку «Войти через WaySenID» рядом с «Войти через Google» / «Яндекс» — один модуль, корректная передача данных (cookie на \*.markbase.ru или wsid_code + exchange-code на стороннем домене).
 → [WAYSENID_LOGIN_AS.md](./WAYSENID_LOGIN_AS.md)
 
 ---
@@ -81,6 +81,22 @@
 4. **HMAC-подпись** — межмодульные запросы подписываются HMAC-SHA256
 5. **API Namespace** — `/api/<slug>/v1/*`
 6. **Семантическое версионирование** — major.minor.patch
+
+---
+
+## Единое меню аккаунта (UI стандарт)
+
+Для всех проектов экосистемы (`markbase.ru`, `markbaseCORE`, плагины) выпадающее меню аккаунта в правом верхнем углу должно быть единообразным:
+
+- Профиль пользователя (имя + email)
+- Баланс кошелька (из `https://billing.markbase.ru/api/billing/balance`)
+- `Аккаунт и безопасность` (`https://auth.markbase.ru/account`) — **метка `внешняя`**
+- `Центр уведомлений` (`https://notifications.markbase.ru`) — **метка `внешняя`**
+- `Кошелек и платежи` (`https://wallet.markbase.ru`) — **метка `внешняя`**
+- `Тарифы и биллинг` (`https://billing.markbase.ru`) — **метка `внешняя`**
+- Выход
+
+Если ссылка ведёт на другой поддомен — обязательна метка `внешняя`, чтобы пользователь не путался при переходах.
 
 ---
 
@@ -136,6 +152,9 @@ curl https://wallet.markbase.ru/api/wallet/v1/balance?project_id=YOUR_UUID \
 
 ### 2026-02-09 (v3)
 - Footer — 3 типа подвалов (AppFooter, PublicFooter, AuthFooter)
+
+### 2026-02-20 (v2.1)
+- Header v1.1.0 — унифицированный dropdown аккаунта (баланс кошелька + внешние ссылки с меткой `внешняя`)
 
 ### 2026-02-09 (v2)
 - Header v1.0.0, Sidebar v1.0.0 — Единый дизайн для CORE модулей

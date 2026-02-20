@@ -2,6 +2,11 @@
 
 Официальные плагины для интеграции модулей MarkBase в ваши проекты.
 
+> Источник единого стандарта для всех проектов:
+> `markbaseCORE/INTEGRATION/PLATFORM_BASELINE.md`
+> и `markbaseCORE/INTEGRATION/platform-registry.json`.
+> Любые изменения по доменам/портам/контрактам сначала вносятся туда.
+
 ## Модули
 
 | Plugin | Версия | Slug | Описание |
@@ -21,6 +26,25 @@
 4. **API Namespace** — `/api/<slug>/v1/*`
 5. **Версионирование** — семантическое (major.minor.patch)
 6. **Отказоустойчивость** — кэш сессий UAM на каждом модуле (пользователи не вылетают при сбое auth)
+
+## Единый стиль аккаунт-меню (обязательный стандарт)
+
+Для всех проектов экосистемы (включая внешние интеграции, где есть меню аккаунта в шапке) применяется единый UX-паттерн dropdown справа сверху:
+
+1. Блок профиля: имя + email пользователя.
+2. Баланс кошелька: источник `https://billing.markbase.ru/api/billing/balance`.
+3. Пункты меню:
+   - `Аккаунт и безопасность` -> `https://auth.markbase.ru/account`
+   - `Центр уведомлений` -> `https://notifications.markbase.ru`
+   - `Кошелек и платежи` -> `https://wallet.markbase.ru`
+   - `Тарифы и биллинг` -> `https://billing.markbase.ru`
+   - `Помощь и документация` -> `https://help.markbase.ru`
+   - `Выйти`
+4. Для всех переходов на другой поддомен обязательна метка `внешняя`.
+5. Dropdown закрывается по клику вне меню и выглядит одинаково во всех модулях.
+
+Источник стандарта: `markbaseCORE/INTEGRATION/MARKBASE/design/HEADER.md` и `header.json`.
+Для обязательной проверки при внедрении: `markbaseCORE/INTEGRATION/MARKBASE/design/HEADER_CHECKLIST.md`.
 
 ## Отказоустойчивость
 
