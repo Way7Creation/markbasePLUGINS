@@ -1,0 +1,58 @@
+{
+  "name": "MarkBase Bonus",
+  "slug": "bonus",
+  "version": "1.0.0",
+  "description": "Единая бонусная и акционная система для экосистемы магазинов: начисления, списания, возвраты, кросс-магазинный баланс, settlement.",
+  "author": "MarkBase",
+  "license": "MIT",
+  "homepage": "https://bonus.markbase.ru",
+  "api_base": "https://bonus.markbase.ru/api/bonus/v1",
+  "port": 8100,
+  "category": "loyalty",
+  "requires": ["uam", "registry", "shop", "orders"],
+  "provides": [
+    "loyalty_programs",
+    "multi_program_bindings",
+    "bonus_accrual",
+    "bonus_writeoff",
+    "refund_reversal",
+    "promo_campaigns",
+    "checkout_quote_hold_commit",
+    "cross_store_bonus_balance",
+    "store_settlement"
+  ],
+  "endpoints": {
+    "balance": "GET /api/bonus/v1/me/balance",
+    "history": "GET /api/bonus/v1/me/history",
+    "campaigns_active": "GET /api/bonus/v1/campaigns/active",
+    "program_join": "POST /api/bonus/v1/programs/join",
+    "checkout_quote": "POST /api/bonus/v1/checkout/quote",
+    "checkout_hold": "POST /api/bonus/v1/checkout/hold",
+    "checkout_commit": "POST /api/bonus/v1/checkout/commit",
+    "checkout_release": "POST /api/bonus/v1/checkout/release",
+    "program_bindings_get": "GET /api/bonus/v1/admin/programs/:id/bindings",
+    "program_bindings_create": "POST /api/bonus/v1/admin/programs/:id/bindings",
+    "program_binding_update": "PUT /api/bonus/v1/admin/bindings/:bindingId",
+    "program_binding_delete": "DELETE /api/bonus/v1/admin/bindings/:bindingId",
+    "order_program_selection": "POST /api/bonus/v1/order/program-selection",
+    "order_paid_event": "POST /api/bonus/v1/events/order-paid",
+    "order_delivered_event": "POST /api/bonus/v1/events/order-delivered",
+    "order_cancelled_event": "POST /api/bonus/v1/events/order-cancelled",
+    "order_refunded_event": "POST /api/bonus/v1/events/order-refunded"
+  },
+  "auth": {
+    "type": "uam_session + hmac",
+    "session_cookie": "uam_session",
+    "cookie_domain": ".markbase.ru",
+    "hmac_headers": ["X-Api-Key", "X-Timestamp", "X-Signature"]
+  },
+  "config": {
+    "BONUS_URL": "https://bonus.markbase.ru",
+    "BONUS_API_KEY": "Выдается через Registry",
+    "BONUS_HMAC_SECRET": "Выдается через Registry"
+  },
+  "compatibility": {
+    "platforms": ["javascript", "python", "php", "any"],
+    "min_version": "1.0.0"
+  }
+}

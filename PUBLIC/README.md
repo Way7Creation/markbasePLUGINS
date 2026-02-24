@@ -67,6 +67,7 @@
 | [Monitoring](./plugins/monitoring/) | 1.0.0 | Health checks, метрики, алерты |
 | [Billing](./plugins/billing/) | 1.0.0 | Тарифы, подписки, лимиты |
 | [Wallet](./plugins/wallet/) | 1.0.0 | Балансы, транзакции, платежи |
+| [Bonus](./plugins/bonus/) | 1.0.0 | Бонусы и акции: начисления, списания, возвраты, кампании, checkout quote/hold/commit |
 | [Docker Performance](./plugins/docker-performance/) | 1.0.0 | Оптимизация Docker-сборки |
 
 > Подробнее: [plugins/README.md](./plugins/README.md)

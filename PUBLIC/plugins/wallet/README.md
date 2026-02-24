@@ -513,6 +513,19 @@ add_action('admin_menu', function() {
 | POST | `/api/wallet/v1/charge` | `{project_id, amount, reason, idempotency_key}` | Списать средства |
 | GET | `/api/wallet/v1/transactions` | `?project_id=UUID&limit=20&offset=0&type=charge` | История транзакций |
 | GET | `/api/wallet/v1/payment-methods` | `?project_id=UUID` | Список платёжных методов |
+| GET | `/api/wallet/v1/overview` | — | Денежный+бонусный баланс, pending списания, summary подписок |
+| GET | `/api/wallet/v1/subscriptions` | — | Подписки пользователя по сервисам |
+| POST | `/api/wallet/v1/subscriptions/:id/disable-autopay` | — | Одностороннее отключение автосписания по сервису |
+| POST | `/api/wallet/v1/payment-methods/test-card/ensure` | — | Создать/проверить test-card (sandbox) |
+| POST | `/api/wallet/v1/payment-methods/:id/set-default` | — | Сделать способ оплаты основным |
+| DELETE | `/api/wallet/v1/payment-methods/:id` | — | Удалить способ оплаты |
+| POST | `/api/wallet/v1/sandbox/subscriptions` | — | Создать тестовую подписку для e2e платежных прогонов |
+| POST | `/api/wallet/v1/sandbox/subscriptions/:id/simulate-charge` | — | Тестовое списание подписки с баланса |
+| GET | `/api/wallet/v1/payments/intents` | — | Список intent-операций (sandbox) |
+| POST | `/api/wallet/v1/payments/intents` | — | Создать платежный intent |
+| POST | `/api/wallet/v1/payments/intents/:id/confirm` | — | Подтвердить intent (OTP sandbox: `0000`) |
+| POST | `/api/wallet/v1/payments/intents/:id/cancel` | — | Отменить intent |
+| GET | `/api/wallet/v1/security/confirmations` | — | Журнал подтверждений/чувствительных действий |
 | GET | `/api/wallet/v1/health` | — | Health check модуля |
 
 ### Ответ `/balance`
