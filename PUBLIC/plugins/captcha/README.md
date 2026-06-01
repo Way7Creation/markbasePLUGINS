@@ -422,7 +422,7 @@ import Captcha from '../components/Captcha';
 - CORS автоматически разрешает все origins. Валидация домена происходит на уровне **проекта** (`allowed_domains` в БД).
 - Nginx для captcha.markbase.ru **НЕ ставит** CORS-заголовки — их ставит только Express middleware.
 - Ошибка «multiple values» означает, что CORS-заголовок ставится в двух местах — исправьте Nginx.
-- Подробнее: [ПРОБЛЕМЫ_НЕ_НА_НАШЕЙ_СТОРОНЕ.md](../../../../ПРОБЛЕМЫ_НЕ_НА_НАШЕЙ_СТОРОНЕ.md) § 1.
+- Подробнее: [MARKBASE_PLUGINS_OUR_SIDE.md](../../MARKBASE_PLUGINS_OUR_SIDE.md) (раздел CORS/captcha).
 - CSP для внешних проектов: [MARKBASE_PLUGINS_OUR_SIDE.md](../../MARKBASE_PLUGINS_OUR_SIDE.md).
 
 ### Настройка провайдеров

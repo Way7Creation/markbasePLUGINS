@@ -239,21 +239,21 @@
       "new_email": "Автоматическое создание аккаунта (email подтверждён провайдером)",
       "different_email": "Подтверждение привязки через UI"
     },
-    "docs": "PROVIDERS.md"
+    "docs": "INTEGRATION.md"
   },
 
   "connected_apps": {
     "description": "Пользователь видит все приложения, которым дал доступ через WaySenID",
     "features": ["Список приложений с scopes", "Управление разрешениями", "Отзыв доступа", "История входов"],
     "path": "auth.markbase.ru/account/connections",
-    "docs": "PROVIDERS.md"
+    "docs": "INTEGRATION.md"
   },
 
   "developer_dashboard": {
     "description": "Панель разработчика для управления OAuth-приложениями",
     "path": "registry.markbase.ru/apps",
     "features": ["Credentials management", "Брендинг (Consent Screen preview)", "One Tap настройки", "Webhooks", "Статистика и аналитика", "Аудит-лог"],
-    "docs": "DASHBOARD.md"
+    "docs": "README.md"
   },
 
   "webhooks": {
@@ -266,8 +266,6 @@
     "README.md": "Обзор, кнопка, OAuth endpoints, SDK, регистрация, дизайн-гайдлайны",
     "INTEGRATION.md": "Полное руководство интеграции с примером WayGPT, lifecycle, backend, БД, безопасность",
     "ONETAP.md": "One Tap auto sign-in, session detection (iframe + FedCM), prompt UI, auto-select, CSS",
-    "PROVIDERS.md": "Внешние провайдеры, управление подключениями, connected apps, webhooks, схема БД",
-    "DASHBOARD.md": "Developer Dashboard, Admin Panel, статистика, аудит-лог, API",
     "waysenid.css": "Ready-to-use CSS: кнопка, форма, One Tap prompt, адаптивность, тёмная тема",
     "plugin.json": "Метаданные спецификации"
   },

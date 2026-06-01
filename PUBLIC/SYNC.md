@@ -1,5 +1,7 @@
 # Синхронизация PUBLIC с публичным репозиторием
 
+> **Внутренний maintainer-документ** (не для внешних разработчиков). Описывает, как папка `INTEGRATION/PUBLIC/` из приватного репозитория `markbaseCORE` публикуется во внешний репозиторий [markbasePLUGINS](https://github.com/Way7Creation/markbasePLUGINS). Скрипты и `git subtree`-команды ниже выполняются **в исходном репозитории `markbaseCORE`**, а не в этом отдельном клоне.
+
 Папка `INTEGRATION/PUBLIC/` синхронизируется с публичным репозиторием [markbasePLUGINS](https://github.com/Way7Creation/markbasePLUGINS) для внешних разработчиков.
 
 ## Как это работает
@@ -18,18 +20,20 @@ PUBLIC/
 │   ├── ONETAP.md
 │   ├── waysenid.css
 │   └── plugin.json
-├── plugins/               ← API-плагины модулей
+├── plugins/               ← API-плагины модулей (актуальный список — plugins/README.md)
 │   ├── README.md
-│   ├── billing/
-│   ├── captcha/
-│   ├── monitoring/
-│   ├── registry/
-│   ├── security/
-│   ├── uam/
-│   ├── wallet/
-│   └── docker-performance/
+│   └── <slug>/            ← по одному каталогу на модуль (uam, captcha, registry, security,
+│                            monitoring, billing, wallet, bonus, crm, hrm, files, delivery,
+│                            logistics, orders, shop, docker-performance, …)
+├── MARKBASE_PLUGINS_OUR_SIDE.md
+├── MARKBASE_MODULES_AUTH.md
+├── WAYSENID_LOGIN_AS.md
+├── CSP_AND_SECURITY.md
+├── CAPTCHA_WIDGET.md
 └── SYNC.md                ← Этот файл
 ```
+
+> Точный перечень модулей не хардкодится здесь — единственный источник истины это содержимое `plugins/` и таблица в `plugins/README.md`.
 
 ## Что НЕ публикуется
 
@@ -39,7 +43,7 @@ PUBLIC/
 
 ## Синхронизация изменений
 
-После коммита в основной репозиторий:
+После коммита в основной репозиторий `markbaseCORE` (команды запускаются **из корня `markbaseCORE`**, скрипты `scripts/sync-plugins.*` лежат там же):
 
 ### Windows:
 ```bash

@@ -1169,7 +1169,7 @@ img-src 'self' data:;
 
 > **Важно для app.markbase.ru:** Если приложение использует CSP и показывает «Network Error» при входе — это CSP блокирует запросы к `auth.markbase.ru`. Добавьте `https://auth.markbase.ru` в `connect-src`.
 
-**Проблемы входа, сессий и CORS** при подключении внешних проектов (app, shop, сторонние сайты) к UAM: [ПРОБЛЕМЫ_НЕ_НА_НАШЕЙ_СТОРОНЕ.md](../../../../ПРОБЛЕМЫ_НЕ_НА_НАШЕЙ_СТОРОНЕ.md) § 2. Что настроить на стороне внешнего проекта (CSP, credentials, return_url): [MARKBASE_PLUGINS_OUR_SIDE.md](../../MARKBASE_PLUGINS_OUR_SIDE.md).
+**Проблемы входа, сессий и CORS** при подключении внешних проектов (app, shop, сторонние сайты) к UAM, и что настроить на стороне внешнего проекта (CSP, credentials, return_url): [MARKBASE_PLUGINS_OUR_SIDE.md](../../MARKBASE_PLUGINS_OUR_SIDE.md).
 
 ---
 

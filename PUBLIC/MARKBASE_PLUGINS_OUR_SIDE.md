@@ -112,17 +112,67 @@ CORS-заголовки ставит **только Express** (middleware). Ngin
 
 ---
 
-## 3. Сводка
+## 3. Граница ответственности: клиент vs Markbase
+
+Ключевой принцип контура C (плагин на чужом сайте): **данные сайта и пользователей остаются в БД клиента**, Markbase предоставляет только сервисы по API. Клиент сам кладёт данные в **свои таблицы** так, как ему нужно (в WordPress, своей CMS, своём backend).
+
+| Зона | На стороне клиента (его сервер / его БД) | На стороне Markbase |
+|------|------------------------------------------|---------------------|
+| Пользователи сайта | **своя таблица users** (+ `wsid_user_id`/`oauth_tokens` для связи), своя сессия, callback-route | хранение аккаунта WaySenID, пароли, подтверждение email, капча регистрации |
+| Контент/товары на чужом сайте | свои таблицы (posts, products) в WP/CMS клиента | только API-ответы модулей (catalog, seo, services) |
+| Секреты подключения | `.env` клиента: `*_API_KEY`, `*_URL`, HMAC-секрет | выдача ключей через Registry, проверка HMAC |
+| Безопасность фронта | CSP, `credentials: 'include'`, CORS своего домена | rate-limit, Security, billing/402, CORS allowlist ядра |
+| Согласия/ПДн на формах | UI согласий и хранение по 152-ФЗ в БД клиента | consent SSOT только для аккаунта WaySenID |
+
+> **152-ФЗ:** формы регистрации/обратной связи на сайте клиента — зона ответственности клиента (юр. тексты, cookie-баннер, хранение согласий). Канон платформы: каталог `152ФЗ/` + правило `.cursor/rules/personal-data-152fz-compliance.mdc`. WaySenID отвечает только за согласия внутри своего аккаунта.
+
+---
+
+## 4. Единый клиентский `.env` (шаблон-обёртка)
+
+Один файл на стороне клиентского сайта. Имена `MARKBASE_*` — унифицированный шаблон; машинный SSOT имён — `config` в `plugin.json` каждого модуля (`SHOP_URL`, `CAPTCHA_URL`, …). Включайте только нужные модули.
+
+```bash
+# === Markbase: общее ===
+MARKBASE_REGISTRY_URL=https://registry.markbase.ru
+MARKBASE_COMPANY_ID=        # юрлицо/биллинг
+MARKBASE_SHOP_ID=           # витрина (если используется SHOP)
+MARKBASE_SITE_ID=           # внешний сайт (plugin-контур)
+
+# === Auth (WaySenID) ===
+MARKBASE_AUTH_URL=https://auth.markbase.ru
+MARKBASE_AUTH_CLIENT_ID=    # для OAuth-варианта (auth-widget)
+
+# === Captcha ===
+MARKBASE_CAPTCHA_URL=https://captcha.markbase.ru
+MARKBASE_CAPTCHA_SITE_KEY=
+MARKBASE_CAPTCHA_SECRET_KEY=REPLACE_WITH_STRONG_SECRET
+
+# === Любой модуль (пример: shop) ===
+MARKBASE_SHOP_URL=https://shop.markbase.ru
+MARKBASE_SHOP_API_KEY=REPLACE_WITH_STRONG_48_CHAR_API_KEY
+MARKBASE_SHOP_HMAC_SECRET=REPLACE_WITH_STRONG_SECRET
+```
+
+Правила: пустой обязательный ключ → ошибка старта (fail-closed); только публичные HTTPS URL (не `http://uam:8060` с чужого VPS); секреты — только на сервере клиента, не в git.
+
+> **SHOP на чужом домене — только headless.** Cookie-SSO `uam_session` на `.markbase.ru` **не работает** на `yoursite.com`. Поэтому корзина/чекаут/аккаунт SHOP на чужом домене подключаются в **headless-режиме** (REST + HMAC из backend клиента или WaySenID OAuth для пользователя), а не через cookie витрины markbase. Полноценная витрина с cookie-SSO — это контур A (`*.shop.markbase.ru`) или B (Box).
+
+---
+
+## 5. Сводка настроек
 
 | Что настраивает внешний проект | Где |
 |-------------------------------|-----|
 | CSP: `connect-src` для auth и captcha | Nginx / helmet / meta-тег внешнего проекта |
 | `credentials: 'include'` при запросах к UAM/Captcha | Frontend внешнего проекта (fetch/axios) |
 | Backend: URL для валидации сессии | Код backend внешнего проекта (`https://auth.markbase.ru`) |
+| Своя таблица пользователей + связь с WaySenID | БД клиента |
+| `.env` с ключами модулей | Сервер клиента |
 
 | Что настраивается в ядре (waysen_core) | Где |
 |---------------------------------------|-----|
 | CORS для сторонних доменов (UAM) | `UAM_CORS_ORIGINS` в `.env` (капча разрешает все origins автоматически) |
 | Return URL allowlist | `UAM_RETURN_URL_ALLOWLIST` в `.env` |
 
-Типичные проблемы интеграции: [ПРОБЛЕМЫ_НЕ_НА_НАШЕЙ_СТОРОНЕ.md](../../ПРОБЛЕМЫ_НЕ_НА_НАШЕЙ_СТОРОНЕ.md).
+Типичные проблемы интеграции и их решения собраны в этом же документе (разделы выше) и в каталоге [plugins/README.md](./plugins/README.md) § «Типичные проблемы».

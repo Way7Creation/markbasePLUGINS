@@ -45,6 +45,8 @@ mystore.ru (custom)     → shop_id: ghi-789 → каталог, корзина,
 - Один аккаунт → доступ ко всем магазинам на платформе
 - Покупателю не нужно регистрироваться отдельно в каждом магазине
 
+> **Важно (контур C — чужой домен):** cookie-SSO `uam_session` работает только на `*.markbase.ru` / `*.shop.markbase.ru` (контуры A/B). На стороннем домене (`yoursite.com`, WordPress) SHOP подключается **только headless** — REST + HMAC из backend клиента и/или WaySenID OAuth для пользователя; cookie витрины markbase там недоступна. См. `Plugins/PUBLIC/MARKBASE_PLUGINS_OUR_SIDE.md` §4.
+
 ### Межмодульные запросы
 HMAC-SHA256 с заголовками: `X-Api-Key`, `X-Timestamp`, `X-Signature`, `X-Shop-Id`.
 

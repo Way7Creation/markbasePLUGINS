@@ -1,0 +1,47 @@
+{
+  "name": "MarkBase FAB3D",
+  "slug": "fab3d",
+  "version": "1.0.0",
+  "description": "Manufacturing OS для 3D-печати: upload, slice, quote, cost engine. Headless API (server-to-server). Публичный embed — только через widgets.markbase.ru, не отдельный поддомен виджета.",
+  "author": "MarkBase",
+  "license": "MIT",
+  "homepage": "https://fabricore.ru",
+  "api_base": "https://fab3d.markbase.ru",
+  "public_url": "https://fab3d.markbase.ru",
+  "category": "manufacturing",
+  "requires": ["registry", "billing", "files", "widgets"],
+  "provides": ["fab3d_quote", "slice", "cost_engine"],
+  "multi_tenant": {
+    "isolation": "company_id",
+    "header": "X-Company-Id"
+  },
+  "auth": {
+    "type": "hmac",
+    "hmac_headers": ["X-Api-Key", "X-Timestamp", "X-Signature", "X-Company-Id"]
+  },
+  "config": {
+    "MARKBASE_FAB3D_URL": "Public FAB3D API base URL",
+    "MARKBASE_FAB3D_API_KEY": "REPLACE_WITH_STRONG_48_CHAR_API_KEY",
+    "MARKBASE_FAB3D_HMAC_SECRET": "REPLACE_WITH_STRONG_64_CHAR_HMAC_SECRET",
+    "MARKBASE_COMPANY_ID": "Billing company id",
+    "MARKBASE_SITE_ID": "Registry site id for embed"
+  },
+  "embed": {
+    "via": "widgets",
+    "catalog": "https://widgets.markbase.ru/api/widgets/v1/public/catalog",
+    "loader": "https://widgets.markbase.ru/widget/fab3d/loader.js",
+    "kind": "fab3d_quote",
+    "selector": "[data-markbase-fab3d-quote]"
+  },
+  "endpoints": {
+    "health": "GET /health",
+    "upload_init": "POST /shop/uploads/init",
+    "upload_complete": "POST /shop/uploads/:id/complete",
+    "quote_create": "POST /shop/quotes",
+    "quote_get": "GET /shop/quotes/:id",
+    "quote_patch": "PATCH /shop/quotes/:id",
+    "quote_accept": "POST /shop/quotes/:id/accept",
+    "materials": "GET /shop/materials",
+    "process_presets": "GET /shop/process-presets"
+  }
+}

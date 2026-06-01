@@ -6,11 +6,13 @@
 
 ## Модули
 
+> **Версия — из `plugin.json`** соответствующего модуля (единый источник истины). Таблицы ниже синхронизированы с манифестами; при расхождении приоритет — `plugin.json`.
+
 ### Ядро (Core)
 
 | Модуль | Версия | Slug | Порт | Домен | Описание |
 |--------|--------|------|------|-------|----------|
-| [UAM (WaySenID)](./uam/) | 1.5.0 | `uam` | 8060 | `auth.markbase.ru` | Единая аутентификация, SSO, сессии, проверка email, многоуровневая защита |
+| [UAM (WaySenID)](./uam/) | 2.1.0 | `uam` | 8060 | `auth.markbase.ru` | Единая аутентификация, SSO, сессии, проверка email, многоуровневая защита |
 | [Captcha](./captcha/) | 1.1.0 | `captcha` | 8079 | `captcha.markbase.ru` | Защита форм от ботов, Яндекс SmartCaptcha, fail-open стратегия |
 | [Registry](./registry/) | 1.1.0 | `registry` | 8065 | `registry.markbase.ru` | Каталог модулей, API-ключи, HMAC |
 | [Security](./security/) | 1.1.0 | `security` | 8061 | `security.markbase.ru` | Rate limiting, IP-фильтрация, аудит |
@@ -24,16 +26,16 @@
 | Модуль | Версия | Slug | Порт | Домен | Описание |
 |--------|--------|------|------|-------|----------|
 | [CRM](./crm/) | 1.0.0 | `crm` | 8067 | `crm.markbase.ru` | Управление клиентами, менеджерами, заказами, активностями |
-| [HRM](./hrm/) | 1.0.0 | `hrm` | 8068 | `hrm.markbase.ru` | Управление сотрудниками, отделами, должностями |
+| [HRM](./hrm/) | 2.0.0 | `hrm` | 8068 | `hrm.markbase.ru` | Управление сотрудниками, отделами, должностями |
 | [Orders](./orders/) | 1.0.0 | `orders` | 8085 | `orders.markbase.ru` | Закупки у поставщиков (RS24, ETM), спецификации |
-| [Shop](./shop/) | 1.0.2 | `shop` | 8020 | `shop.markbase.ru` | Интернет-магазин: каталог, корзина, B2B/B2C чекаут, AI-поиск |
+| [Shop](./shop/) | 1.1.0 | `shop` | 8020 | `shop.markbase.ru` | Интернет-магазин: каталог, корзина, B2B/B2C чекаут, AI-поиск |
 | [Bonus](./bonus/) | 1.0.0 | `bonus` | 8100 | `bonus.markbase.ru` | Бонусы и акции: начисления, списания, возвраты, кампании, checkout quote/hold/commit |
 
 ### Файлы и хранение
 
 | Модуль | Версия | Slug | Порт | Домен | Описание |
 |--------|--------|------|------|-------|----------|
-| [Files](./files/) | 1.0.0 | `files` | 8095 | `files.markbase.ru` | Загрузка, хранение, обработка файлов (изображения, документы) |
+| [Files](./files/) | 3.1.0 | `files` | 8095 | `files.markbase.ru` | Загрузка, хранение, обработка файлов (изображения, документы) |
 
 ### Логистика
 
@@ -196,13 +198,15 @@ Docker-имена работают **только** внутри своего с
 
 ## Типичные проблемы: где искать решение
 
+Полный разбор клиентских проблем (CORS, captcha, return_url, CSP) — [MARKBASE_PLUGINS_OUR_SIDE.md](../MARKBASE_PLUGINS_OUR_SIDE.md).
+
 | Проблема | Где правится | Документация |
 |----------|-------------|--------------|
-| CORS «multiple values» для капчи | В `.env` ядра или Nginx captcha | [ПРОБЛЕМЫ](../../../ПРОБЛЕМЫ_НЕ_НА_НАШЕЙ_СТОРОНЕ.md) § 1.1 |
-| Капча недоступна / таймаут | Контейнер captcha в waysen_core | [ПРОБЛЕМЫ](../../../ПРОБЛЕМЫ_НЕ_НА_НАШЕЙ_СТОРОНЕ.md) § 1.2 |
-| CORS / «Network Error» при входе | CSP внешнего проекта или `UAM_CORS_ORIGINS` | [ПРОБЛЕМЫ](../../../ПРОБЛЕМЫ_НЕ_НА_НАШЕЙ_СТОРОНЕ.md) § 2 |
-| Return URL отклонён | `UAM_RETURN_URL_ALLOWLIST` в `.env` ядра | [ПРОБЛЕМЫ](../../../ПРОБЛЕМЫ_НЕ_НА_НАШЕЙ_СТОРОНЕ.md) § 2.3 |
-| ReferenceError в main.*.js | Фронтенд внешнего проекта | [ПРОБЛЕМЫ](../../../ПРОБЛЕМЫ_НЕ_НА_НАШЕЙ_СТОРОНЕ.md) § 3 |
+| CORS «multiple values» для капчи | В `.env` ядра или Nginx captcha | [MARKBASE_PLUGINS_OUR_SIDE.md](../MARKBASE_PLUGINS_OUR_SIDE.md) |
+| Капча недоступна / таймаут | Контейнер captcha в waysen_core | [MARKBASE_PLUGINS_OUR_SIDE.md](../MARKBASE_PLUGINS_OUR_SIDE.md) |
+| CORS / «Network Error» при входе | CSP внешнего проекта или `UAM_CORS_ORIGINS` | [MARKBASE_PLUGINS_OUR_SIDE.md](../MARKBASE_PLUGINS_OUR_SIDE.md) |
+| Return URL отклонён | `UAM_RETURN_URL_ALLOWLIST` в `.env` ядра | [MARKBASE_PLUGINS_OUR_SIDE.md](../MARKBASE_PLUGINS_OUR_SIDE.md) |
+| ReferenceError в main.*.js | Фронтенд внешнего проекта | [MARKBASE_PLUGINS_OUR_SIDE.md](../MARKBASE_PLUGINS_OUR_SIDE.md) |
 
 ---
 

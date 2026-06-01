@@ -58,11 +58,13 @@
 
 Документация по подключению к API модулей MarkBase.
 
+> **Версия модуля — из `plugin.json`** (единый источник истины). Таблица ниже синхронизирована с манифестами; полный каталог с портами/доменами — [plugins/README.md](./plugins/README.md).
+
 | Модуль | Версия | Описание |
 |--------|--------|----------|
-| [UAM (WaySenID)](./plugins/uam/) | 1.4.0 | Аутентификация, SSO, сессии, проверка email |
+| [UAM (WaySenID)](./plugins/uam/) | 2.1.0 | Аутентификация, SSO, сессии, проверка email |
 | [Captcha](./plugins/captcha/) | 1.1.0 | Защита форм, Яндекс SmartCaptcha, fail-open |
-| [Registry](./plugins/registry/) | 1.0.0 | Каталог модулей, API-ключи, HMAC |
+| [Registry](./plugins/registry/) | 1.1.0 | Каталог модулей, API-ключи, HMAC |
 | [Security](./plugins/security/) | 1.1.0 | Rate limiting, IP-фильтрация, аудит |
 | [Monitoring](./plugins/monitoring/) | 1.0.0 | Health checks, метрики, алерты |
 | [Billing](./plugins/billing/) | 1.0.0 | Тарифы, подписки, лимиты |

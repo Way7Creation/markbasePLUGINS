@@ -1,0 +1,25 @@
+{
+  "name": "MarkBase Widget System",
+  "slug": "widgets",
+  "version": "1.0.0",
+  "description": "Единый хост embed-виджетов: калькуляторы, формы, конфигураторы, fab3d site-bridge. Один widgets.markbase.ru — path /widget/*, не поддомен на виджет.",
+  "author": "MarkBase",
+  "license": "MIT",
+  "homepage": "https://widgets.markbase.ru",
+  "api_base": "https://widgets.markbase.ru/api/widgets/v1",
+  "category": "widgets",
+  "requires": ["registry", "billing"],
+  "provides": ["calculator", "form", "configurator", "quiz", "fab3d_quote_embed", "embed_catalog"],
+  "config": {
+    "MARKBASE_WIDGETS_URL": "Public WIDGET_SYSTEM URL (host origin)",
+    "MARKBASE_WIDGETS_API_KEY": "REPLACE_WITH_STRONG_48_CHAR_API_KEY",
+    "MARKBASE_WIDGETS_HMAC_SECRET": "REPLACE_WITH_STRONG_64_CHAR_HMAC_SECRET"
+  },
+  "embed": {
+    "catalog": "https://widgets.markbase.ru/api/widgets/v1/public/catalog",
+    "loader_engine": "https://widgets.markbase.ru/widget/loader.js",
+    "loader_fab3d": "https://widgets.markbase.ru/widget/fab3d/loader.js",
+    "mount_engine": "[data-markbase-widget]",
+    "mount_fab3d": "[data-markbase-fab3d-quote]"
+  }
+}

@@ -12,9 +12,29 @@
 
 ---
 
-## 2. Два варианта интеграции
+## 2. Какой способ авторизации выбрать (дерево решений)
 
-Выбор зависит от того, где размещён ваш проект.
+В экосистеме три способа подключить вход WaySenID. Выбирайте **один** по таблице — не смешивайте протоколы.
+
+```mermaid
+flowchart TD
+  Q1{"Где размещён ваш проект?"}
+  Q1 -->|"Это модуль на *.markbase.ru"| POP["Popup на auth.markbase.ru + postMessage (без своих форм). Док: MARKBASE_MODULES_AUTH.md"]
+  Q1 -->|"Сторонний сайт / своя регистрация"| Q2{"Нужен полноценный OAuth/OIDC (scopes, refresh, Connected apps)?"}
+  Q2 -->|"Да, полноценный OAuth"| OAUTH["OAuth 2.0 + PKCE через SDK. Док: auth-widget/INTEGRATION.md"]
+  Q2 -->|"Нет, проще — просто получить пользователя"| Q3{"Ваш домен = *.markbase.ru?"}
+  Q3 -->|"Да"| A["Вариант A: cookie uam_session + session/validate"]
+  Q3 -->|"Нет (чужой домен)"| B["Вариант B: wsid_code + POST /exchange-code"]
+```
+
+| Способ | Когда | Док (SSOT) |
+|--------|-------|------------|
+| **Popup `*.markbase.ru`** | Внутренний модуль платформы, без собственных форм входа | [MARKBASE_MODULES_AUTH.md](./MARKBASE_MODULES_AUTH.md) |
+| **OAuth 2.0 + PKCE** | Чужой сайт, нужны scopes/refresh/Connected apps/Developer Dashboard | [auth-widget/INTEGRATION.md](./auth-widget/INTEGRATION.md) |
+| **Вариант A (cookie)** | Ваш проект на `*.markbase.ru`, нужен простой вход | §ниже |
+| **Вариант B (`wsid_code`)** | Чужой домен, нужен простой вход без полного OAuth | §ниже |
+
+Этот документ детально описывает **простые варианты A и B**; полный OAuth — в `auth-widget/INTEGRATION.md`.
 
 | Вариант | Домен вашего проекта | Механизм возврата данных |
 |--------|-----------------------|---------------------------|
