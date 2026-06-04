@@ -39,7 +39,7 @@
 ## Авторизация
 
 ### Браузерные запросы (пользователи)
-Используется **WaySenID SSO** через cookie `uam_session` на домене `.markbase.ru`.
+Используется **Марбэйс id SSO** через cookie `uam_session` на домене `.markbase.ru`.
 
 ```javascript
 // Запрос от фронтенда — cookie передаётся автоматически

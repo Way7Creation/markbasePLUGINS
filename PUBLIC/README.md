@@ -6,37 +6,37 @@
 
 ## Что здесь есть
 
-### 1. WaySenID — Авторизация через MarkBase
+### 1. Марбэйс id — Авторизация через MarkBase
 
-Подключите кнопку **«Войти через WaySenID»** на свой сайт — аналог «Войти через Google/Яндекс» для экосистемы MarkBase.
+Подключите кнопку **«Войти через Марбэйс id»** на свой сайт — аналог «Войти через Google/Яндекс» для экосистемы MarkBase.
 
 | Файл | Описание |
 |------|----------|
 | [auth-widget/README.md](./auth-widget/README.md) | Обзор, кнопка, OAuth 2.0 endpoints, SDK, дизайн-гайд |
 | [auth-widget/INTEGRATION.md](./auth-widget/INTEGRATION.md) | Полное руководство: lifecycle, backend-код, схема БД |
 | [auth-widget/ONETAP.md](./auth-widget/ONETAP.md) | One Tap — автоматическое предложение входа |
-| [auth-widget/waysenid.css](./auth-widget/waysenid.css) | Готовые CSS-стили для кнопки, формы и One Tap |
+| [auth-widget/Марбэйс id.css](./auth-widget/Марбэйс id.css) | Готовые CSS-стили для кнопки, формы и One Tap |
 | [auth-widget/plugin.json](./auth-widget/plugin.json) | Метаданные спецификации |
 
 **Быстрый старт:**
 
 ```html
 <!-- 1. Подключить SDK -->
-<link rel="stylesheet" href="https://auth.markbase.ru/sdk/waysenid.css">
-<script src="https://auth.markbase.ru/sdk/waysenid.js"></script>
+<link rel="stylesheet" href="https://auth.markbase.ru/sdk/Марбэйс id.css">
+<script src="https://auth.markbase.ru/sdk/Марбэйс id.js"></script>
 
 <!-- 2. Контейнер для кнопки -->
 <div id="wsid-button"></div>
 
 <!-- 3. Инициализировать -->
 <script>
-  WaySenID.init({
+  Марбэйс id.init({
     client_id: 'YOUR_CLIENT_ID',
     redirect_uri: window.location.origin + '/auth/callback',
     scope: 'openid profile email'
   });
 
-  WaySenID.renderButton('#wsid-button', {
+  Марбэйс id.renderButton('#wsid-button', {
     variant: 'primary',
     size: 'lg',
     width: '100%'
@@ -46,11 +46,11 @@
 
 > Подробнее: [auth-widget/README.md](./auth-widget/README.md)
 
-**Единый вход во всех модулях markbase.ru (app, shop, delivery и т.д.):** только кнопка «Войти через WaySenID», открытие auth в popup, без своих форм входа/регистрации и капчи. Все настройки капчи — в панели captcha.markbase.ru.
+**Единый вход во всех модулях markbase.ru (app, shop, delivery и т.д.):** только кнопка «Войти через Марбэйс id», открытие auth в popup, без своих форм входа/регистрации и капчи. Все настройки капчи — в панели captcha.markbase.ru.
 → [MARKBASE_MODULES_AUTH.md](./MARKBASE_MODULES_AUTH.md)
 
-**Проекты с собственной регистрацией («Войти как»):** добавить кнопку «Войти через WaySenID» рядом с «Войти через Google» / «Яндекс» — один модуль, корректная передача данных (cookie на \*.markbase.ru или wsid_code + exchange-code на стороннем домене).
-→ [WAYSENID_LOGIN_AS.md](./WAYSENID_LOGIN_AS.md)
+**Проекты с собственной регистрацией («Войти как»):** добавить кнопку «Войти через Марбэйс id» рядом с «Войти через Google» / «Яндекс» — один модуль, корректная передача данных (cookie на \*.markbase.ru или wsid_code + exchange-code на стороннем домене).
+→ [Марбэйс id_LOGIN_AS.md](./Марбэйс id_LOGIN_AS.md)
 
 ---
 
@@ -62,7 +62,7 @@
 
 | Модуль | Версия | Описание |
 |--------|--------|----------|
-| [UAM (WaySenID)](./plugins/uam/) | 2.1.0 | Аутентификация, SSO, сессии, проверка email |
+| [UAM (Марбэйс id)](./plugins/uam/) | 2.1.0 | Аутентификация, SSO, сессии, проверка email |
 | [Captcha](./plugins/captcha/) | 1.1.0 | Защита форм, Яндекс SmartCaptcha, fail-open |
 | [Registry](./plugins/registry/) | 1.1.0 | Каталог модулей, API-ключи, HMAC |
 | [Security](./plugins/security/) | 1.1.0 | Rate limiting, IP-фильтрация, аудит |
@@ -121,7 +121,7 @@
 
 ## Поддерживаемые платформы
 
-- **JavaScript / Node.js** — npm: `@markbase/waysenid-sdk`
+- **JavaScript / Node.js** — npm: `@markbase/Марбэйс id-sdk`
 - **Python / FastAPI** — примеры в [INTEGRATION.md](./auth-widget/INTEGRATION.md)
 - **PHP / WordPress** — примеры в каждом плагине
 - **REST API** — любая платформа через HTTP

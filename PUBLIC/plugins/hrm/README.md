@@ -38,7 +38,7 @@
 ## Авторизация
 
 ### Браузерные запросы (пользователи)
-WaySenID SSO через cookie `uam_session` на домене `.markbase.ru`.
+Марбэйс id SSO через cookie `uam_session` на домене `.markbase.ru`.
 
 ### Межмодульные запросы (service-to-service)
 HMAC-SHA256 с заголовками: `X-Api-Key`, `X-Timestamp`, `X-Signature`, `X-Company-Id`, `X-Shop-Id`.

@@ -1,8 +1,8 @@
-# WaySenID — Войти через WaySenID
+# Марбэйс id — Войти через Марбэйс id
 
 > **Версия:** 3.0.0 | **Slug:** `auth-widget` | **Категория:** Auth / SSO
 
-Полная документация для интеграции авторизации **WaySenID** в ваш проект.
+Полная документация для интеграции авторизации **Марбэйс id** в ваш проект.
 Аналог кнопок «Войти через Google», «Войти через Яндекс» — для экосистемы MarkBase.
 
 ---
@@ -14,24 +14,24 @@
 | **README.md** (этот файл) | Обзор, кнопка, OAuth endpoints, SDK, UI-компоненты |
 | **[INTEGRATION.md](./INTEGRATION.md)** | Полное руководство: lifecycle, backend-код, схема БД, безопасность |
 | **[ONETAP.md](./ONETAP.md)** | One Tap — автоматическое предложение входа, session detection |
-| **[WAYSENID_LOGIN_AS.md](../WAYSENID_LOGIN_AS.md)** | Подключение как модуль: проект с **собственной регистрацией** — одна кнопка «Войти как», передача данных (cookie / wsid_code) |
-| **[waysenid.css](./waysenid.css)** | Ready-to-use CSS для кнопки и формы (CDN / npm) |
+| **[Марбэйс id_LOGIN_AS.md](../Марбэйс id_LOGIN_AS.md)** | Подключение как модуль: проект с **собственной регистрацией** — одна кнопка «Войти как», передача данных (cookie / wsid_code) |
+| **[Марбэйс id.css](./Марбэйс id.css)** | Ready-to-use CSS для кнопки и формы (CDN / npm) |
 | **[plugin.json](./plugin.json)** | Метаданные спецификации |
 
 ---
 
 ## 1. Обзор
 
-**WaySenID** — единый провайдер аутентификации платформы MarkBase.
-Любой сервис (внутренний модуль или сторонний сайт) может добавить кнопку **«Войти через WaySenID»** и получить доступ к данным пользователя через стандартный OAuth 2.0 + OIDC flow.
+**Марбэйс id** — единый провайдер аутентификации платформы MarkBase.
+Любой сервис (внутренний модуль или сторонний сайт) может добавить кнопку **«Войти через Марбэйс id»** и получить доступ к данным пользователя через стандартный OAuth 2.0 + OIDC flow.
 
 ### 1.1 Как это работает
 
 ```
-   Ваш сервис (waygpt.ru)              WaySenID (auth.markbase.ru)
+   Ваш сервис (waygpt.ru)              Марбэйс id (auth.markbase.ru)
 ┌─────────────────────────┐         ┌─────────────────────────────┐
 │                         │         │                             │
-│  [Войти через WaySenID] │ ──────► │  У пользователя есть        │
+│  [Войти через Марбэйс id] │ ──────► │  У пользователя есть        │
 │                         │         │  аккаунт?                   │
 │  ───── или ─────        │         │                             │
 │                         │         │  ДА → Account Picker /      │
@@ -53,11 +53,11 @@
 - **Регистрация с подтверждением** — пользователь обязательно подтверждает email 6-значным кодом
 - **Consent Screen** — при первом входе пользователь явно разрешает доступ к данным
 - **Полная безопасность** — CSRF (state), PKCE, httpOnly cookies, шифрование токенов
-- **Вам не нужно** реализовывать регистрацию, подтверждение email, captcha — WaySenID делает всё сам
+- **Вам не нужно** реализовывать регистрацию, подтверждение email, captcha — Марбэйс id делает всё сам
 
 ---
 
-## 2. Кнопка «Войти через WaySenID»
+## 2. Кнопка «Войти через Марбэйс id»
 
 ### 2.1 Варианты
 
@@ -79,7 +79,7 @@
 
 ```html
 <!-- Primary, размер md -->
-<button class="wsid-btn wsid-btn--primary wsid-btn--md" onclick="WaySenID.login()">
+<button class="wsid-btn wsid-btn--primary wsid-btn--md" onclick="Марбэйс id.login()">
   <svg class="wsid-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
        stroke-linecap="round" stroke-linejoin="round">
@@ -88,13 +88,13 @@
     <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10
              15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
   </svg>
-  Войти через WaySenID
+  Войти через Марбэйс id
 </button>
 ```
 
 ### 2.4 CSS
 
-Полные стили — в файле [waysenid.css](./waysenid.css).
+Полные стили — в файле [Марбэйс id.css](./Марбэйс id.css).
 
 ```css
 /* ─── Base ─── */
@@ -132,7 +132,7 @@
 │  Ваш сайт      │ ── open ──►    │  Account Picker       │
 │                │                 │  user@mail.ru    ✓    │
 │  [Войти через  │                 │  other@mail.ru        │
-│   WaySenID]    │                 │  + Другой аккаунт     │
+│   Марбэйс id]    │                 │  + Другой аккаунт     │
 │                │ ◄── postMsg ── │  (закрывается)        │
 │  Авторизован   │                 └───────────────────────┘
 └────────────────┘
@@ -259,7 +259,7 @@ Authorization: Bearer ACCESS_TOKEN
 
 ```
 ┌──────────────────────────────────────┐
-│         WaySenID                     │
+│         Марбэйс id                     │
 │      Выберите аккаунт                │
 │  для продолжения в «App Name»        │
 │                                      │
@@ -287,7 +287,7 @@ Authorization: Bearer ACCESS_TOKEN
 
 ```
 ┌──────────────────────────────────────┐
-│         WaySenID                     │
+│         Марбэйс id                     │
 │                                      │
 │  Приложение «App Name»              │
 │  (app.example.com) запрашивает:      │
@@ -309,18 +309,18 @@ Authorization: Bearer ACCESS_TOKEN
 
 **CDN:**
 ```html
-<script src="https://auth.markbase.ru/sdk/waysenid.js"></script>
+<script src="https://auth.markbase.ru/sdk/Марбэйс id.js"></script>
 ```
 
 **npm:**
 ```bash
-npm install @markbase/waysenid-sdk
+npm install @markbase/Марбэйс id-sdk
 ```
 
 ### 8.2 Инициализация
 
 ```javascript
-WaySenID.init({
+Марбэйс id.init({
   client_id: 'YOUR_CLIENT_ID',
   redirect_uri: 'https://yoursite.com/callback',
   scope: 'openid profile email',
@@ -333,10 +333,10 @@ WaySenID.init({
 ### 8.3 Рендер кнопки
 
 ```javascript
-WaySenID.renderButton('#wsid-button', {
+Марбэйс id.renderButton('#wsid-button', {
   variant: 'primary',   // 'primary' | 'outline' | 'minimal'
   size: 'md',           // 'lg' | 'md' | 'sm'
-  text: 'Войти через WaySenID',
+  text: 'Войти через Марбэйс id',
   width: '100%',
 });
 ```
@@ -345,7 +345,7 @@ WaySenID.renderButton('#wsid-button', {
 
 ```javascript
 // Popup-режим
-const result = await WaySenID.login({
+const result = await Марбэйс id.login({
   mode: 'popup',
   prompt: 'select_account',
 });
@@ -361,17 +361,17 @@ if (result.success) {
 ### 8.5 События
 
 ```javascript
-WaySenID.on('login', (user) => console.log('Logged in:', user.email));
-WaySenID.on('logout', () => console.log('Logged out'));
-WaySenID.on('token_expired', () => WaySenID.refreshToken());
-WaySenID.on('error', (err) => console.error(err.code, err.message));
+Марбэйс id.on('login', (user) => console.log('Logged in:', user.email));
+Марбэйс id.on('logout', () => console.log('Logged out'));
+Марбэйс id.on('token_expired', () => Марбэйс id.refreshToken());
+Марбэйс id.on('error', (err) => console.error(err.code, err.message));
 ```
 
 ### 8.6 Выход
 
 ```javascript
-await WaySenID.logout();
-await WaySenID.logout({ global: true }); // из всех приложений
+await Марбэйс id.logout();
+await Марбэйс id.logout({ global: true }); // из всех приложений
 ```
 
 ---
@@ -388,27 +388,27 @@ await WaySenID.logout({ global: true }); // из всех приложений
 
 ```html
 <div id="wsid-button"></div>
-<script src="https://auth.markbase.ru/sdk/waysenid.js"></script>
+<script src="https://auth.markbase.ru/sdk/Марбэйс id.js"></script>
 <script>
-  WaySenID.init({
+  Марбэйс id.init({
     client_id: 'YOUR_CLIENT_ID',
     redirect_uri: window.location.origin + '/callback',
     scope: 'openid profile email'
   });
-  WaySenID.renderButton('#wsid-button', { variant: 'primary', size: 'lg', width: '100%' });
+  Марбэйс id.renderButton('#wsid-button', { variant: 'primary', size: 'lg', width: '100%' });
 </script>
 ```
 
 ### 9.3 React
 
 ```jsx
-import { WaySenIDButton, WaySenIDProvider } from '@markbase/waysenid-sdk/react';
+import { Марбэйс idButton, Марбэйс idProvider } from '@markbase/Марбэйс id-sdk/react';
 
 function App() {
   return (
-    <WaySenIDProvider clientId="YOUR_CLIENT_ID" redirectUri="/callback" scope="openid profile email">
+    <Марбэйс idProvider clientId="YOUR_CLIENT_ID" redirectUri="/callback" scope="openid profile email">
       <LoginPage />
-    </WaySenIDProvider>
+    </Марбэйс idProvider>
   );
 }
 ```
@@ -430,7 +430,7 @@ async def oauth_callback(code: str, state: str):
 
 ## 10. Регистрация нового пользователя
 
-Когда пользователь нажимает «Войти через WaySenID» и у него **нет аккаунта**, WaySenID автоматически проводит его через регистрацию:
+Когда пользователь нажимает «Войти через Марбэйс id» и у него **нет аккаунта**, Марбэйс id автоматически проводит его через регистрацию:
 
 ```
 Email → Проверка → Пароль → Captcha → Согласия → Письмо → Код → Аккаунт
@@ -440,7 +440,7 @@ Email → Проверка → Пароль → Captcha → Согласия →
 |--------------|-----------|
 | Реализовывать регистрацию | Обработать callback (code → token) |
 | Подтверждать email | Создать пользователя в своей БД |
-| Хранить пароли WaySenID | Проверить `email_verified: true` |
+| Хранить пароли Марбэйс id | Проверить `email_verified: true` |
 | Captcha | Показать onboarding новому пользователю |
 
 ---
@@ -462,9 +462,9 @@ Email → Проверка → Пароль → Captcha → Согласия →
 
 ## 12. Дизайн-гайдлайны
 
-- Кнопка ДОЛЖНА использовать стандартную иконку WaySenID (globe SVG)
+- Кнопка ДОЛЖНА использовать стандартную иконку Марбэйс id (globe SVG)
 - ЗАПРЕЩЕНО изменять текст, цвета или пропорции иконки
-- Допустимые тексты: «Войти через WaySenID», «Продолжить с WaySenID», «WaySenID»
+- Допустимые тексты: «Войти через Марбэйс id», «Продолжить с Марбэйс id», «Марбэйс id»
 - Кнопка ДОЛЖНА быть не менее 34px высотой (размер `sm`)
 
 **Цветовая палитра:**
@@ -499,17 +499,17 @@ Danger:          #ef4444
 ## 14. Быстрый старт (5 минут)
 
 ```bash
-npm install @markbase/waysenid-sdk
+npm install @markbase/Марбэйс id-sdk
 ```
 
 ```javascript
-WaySenID.init({
+Марбэйс id.init({
   client_id: 'YOUR_CLIENT_ID',
   redirect_uri: window.location.origin + '/auth/callback',
   scope: 'openid profile email',
 });
 
-WaySenID.renderButton('#login-btn', {
+Марбэйс id.renderButton('#login-btn', {
   variant: 'primary',
   size: 'lg',
   width: '100%',

@@ -1,5 +1,5 @@
 /**
- * WaySenID Auth Widget — Stylesheet
+ * Марбэйс id Auth Widget — Stylesheet
  * Version: 2.0.0
  * CDN:     https://auth.markbase.ru/sdk/waysenid.css
  * npm:     @markbase/waysenid-sdk/styles.css
@@ -9,9 +9,189 @@
  */
 
 /* ═══════════════════════════════════════════════════
-   1. КНОПКА «Войти через WaySenID»
+   1. КНОПКА «Единый аккаунт / Марбэйс id»
    ═══════════════════════════════════════════════════ */
 
+.wsid-unified-btn {
+  display: inline-flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 0;
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.2s ease;
+  -webkit-font-smoothing: antialiased;
+  text-decoration: none;
+  user-select: none;
+  position: relative;
+  overflow: visible;
+  text-align: left;
+  padding: 0;
+}
+
+.wsid-unified-btn:focus-visible {
+  outline: 2px solid #0f172a;
+  outline-offset: 2px;
+}
+
+.wsid-unified-btn[disabled],
+.wsid-unified-btn--loading {
+  opacity: 0.65;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.wsid-unified-btn__main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+  padding: 0 16px;
+}
+
+.wsid-unified-btn__title {
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+}
+
+.wsid-unified-btn__subtitle {
+  font-weight: 400;
+  line-height: 1.2;
+  opacity: 0.72;
+}
+
+.wsid-unified-btn__info {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  width: 44px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.65;
+  transition: opacity 0.15s ease, background 0.15s ease;
+  border-left: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 0;
+}
+
+.wsid-unified-btn--outline .wsid-unified-btn__info {
+  border-left-color: rgba(15, 23, 42, 0.1);
+}
+
+.wsid-unified-btn__info:hover,
+.wsid-unified-btn__info:focus-visible {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.wsid-unified-btn--outline .wsid-unified-btn__info:hover,
+.wsid-unified-btn--outline .wsid-unified-btn__info:focus-visible {
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.wsid-unified-btn__info svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+/* Popover / tooltip content */
+.wsid-unified-info {
+  max-width: 320px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #334155;
+}
+
+.wsid-unified-info__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 8px;
+}
+
+.wsid-unified-info__intro {
+  margin: 0 0 12px;
+  color: #475569;
+}
+
+.wsid-unified-info__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.wsid-unified-info__item-title {
+  display: block;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 2px;
+}
+
+.wsid-unified-info__item-text {
+  display: block;
+  color: #64748b;
+  font-size: 12px;
+}
+
+.wsid-unified-btn--lg {
+  min-height: 48px;
+  border-radius: 12px;
+}
+.wsid-unified-btn--lg .wsid-unified-btn__title { font-size: 15px; }
+.wsid-unified-btn--lg .wsid-unified-btn__subtitle { font-size: 12px; }
+
+.wsid-unified-btn--md {
+  min-height: 40px;
+  border-radius: 10px;
+}
+.wsid-unified-btn--md .wsid-unified-btn__title { font-size: 14px; }
+.wsid-unified-btn--md .wsid-unified-btn__subtitle { font-size: 11px; }
+
+.wsid-unified-btn--sm {
+  min-height: 34px;
+  border-radius: 8px;
+}
+.wsid-unified-btn--sm .wsid-unified-btn__title { font-size: 13px; }
+.wsid-unified-btn--sm .wsid-unified-btn__subtitle { font-size: 10px; }
+.wsid-unified-btn--sm .wsid-unified-btn__info { width: 36px; }
+
+.wsid-unified-btn--full { width: 100%; }
+
+.wsid-unified-btn--primary {
+  background: #0f172a;
+  color: #ffffff;
+}
+.wsid-unified-btn--primary:hover {
+  background: #1e293b;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);
+  transform: translateY(-1px);
+}
+
+.wsid-unified-btn--outline {
+  background: #ffffff;
+  color: #0f172a;
+  border: 1.5px solid #e2e5e9;
+}
+.wsid-unified-btn--outline:hover {
+  border-color: #0f172a;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  transform: translateY(-1px);
+}
+
+/* Legacy single-line button (совместимость SDK) */
 .wsid-btn {
   display: inline-flex;
   align-items: center;
@@ -220,7 +400,7 @@
 
 
 /* ═══════════════════════════════════════════════════
-   4. ПОЛЯ ФОРМЫ (для обычного входа рядом с WaySenID)
+   4. ПОЛЯ ФОРМЫ (для обычного входа рядом с Марбэйс id)
    ═══════════════════════════════════════════════════ */
 
 .wsid-form-group {
@@ -311,7 +491,7 @@
 
 
 /* ═══════════════════════════════════════════════════
-   6. БЕЙДЖ «Powered by WaySenID»
+   6. БЕЙДЖ «Powered by Марбэйс id»
    ═══════════════════════════════════════════════════ */
 
 .wsid-powered {

@@ -14,11 +14,11 @@
 ```
 PUBLIC/
 ├── README.md              ← Главная документация для разработчиков
-├── auth-widget/           ← WaySenID SDK, CSS, OAuth, One Tap
+├── auth-widget/           ← Марбэйс id SDK, CSS, OAuth, One Tap
 │   ├── README.md
 │   ├── INTEGRATION.md
 │   ├── ONETAP.md
-│   ├── waysenid.css
+│   ├── Марбэйс id.css
 │   └── plugin.json
 ├── plugins/               ← API-плагины модулей (актуальный список — plugins/README.md)
 │   ├── README.md
@@ -27,7 +27,7 @@ PUBLIC/
 │                            logistics, orders, shop, docker-performance, …)
 ├── MARKBASE_PLUGINS_OUR_SIDE.md
 ├── MARKBASE_MODULES_AUTH.md
-├── WAYSENID_LOGIN_AS.md
+├── Марбэйс id_LOGIN_AS.md
 ├── CSP_AND_SECURITY.md
 ├── CAPTCHA_WIDGET.md
 └── SYNC.md                ← Этот файл

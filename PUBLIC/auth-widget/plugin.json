@@ -1,45 +1,53 @@
 {
-  "name": "WaySenID Auth Widget Specification",
+  "name": "Марбэйс id Auth Widget Specification",
   "slug": "auth-widget",
   "version": "3.0.0",
-  "description": "Полная спецификация авторизации WaySenID: OAuth 2.0 + OIDC, One Tap auto sign-in, внешние провайдеры (Google/Яндекс/VK/GitHub), управление подключениями, Developer Dashboard, webhooks, FedCM API.",
+  "description": "Полная спецификация авторизации Марбэйс id: OAuth 2.0 + OIDC, One Tap auto sign-in, внешние провайдеры (Google/Яндекс/VK/GitHub), управление подключениями, Developer Dashboard, webhooks, FedCM API.",
   "author": "MarkBase",
   "category": "auth",
 
   "overview": {
-    "provider_name": "WaySenID",
+    "provider_name": "Марбэйс id",
     "provider_domain": "auth.markbase.ru",
     "protocol": "OAuth 2.0 + OIDC",
     "grant_types": ["authorization_code"],
     "pkce": true,
-    "description": "WaySenID — единый провайдер аутентификации экосистемы MarkBase. Аналог 'Войти через Google/Яндекс' для всех внутренних и внешних проектов."
+    "description": "Марбэйс id — единый провайдер аутентификации экосистемы MarkBase. Кнопка «Единый аккаунт» + подпись «Марбэйс id» для всех внутренних и внешних проектов."
   },
 
   "button": {
+    "canonical_labels": {
+      "primary": "Единый аккаунт",
+      "secondary": "Марбэйс id",
+      "info_aria_label": "Подробнее об едином аккаунте Марбэйс id"
+    },
     "variants": {
       "primary": {
-        "text": "Войти через WaySenID",
+        "text_primary": "Единый аккаунт",
+        "text_secondary": "Марбэйс id",
         "background": "#0f172a",
         "color": "#ffffff",
         "border": "none",
         "hover_background": "#1e293b",
-        "icon": "waysenid-logo (monochrome white)"
+        "icon": "Марбэйс id-logo (monochrome white)"
       },
       "outline": {
-        "text": "Войти через WaySenID",
+        "text_primary": "Единый аккаунт",
+        "text_secondary": "Марбэйс id",
         "background": "#ffffff",
         "color": "#0f172a",
         "border": "1.5px solid #e2e5e9",
         "hover_border": "#0f172a",
-        "icon": "waysenid-logo (monochrome dark)"
+        "icon": "Марбэйс id-logo (monochrome dark)"
       },
       "minimal": {
-        "text": "WaySenID",
+        "text_primary": "Единый аккаунт",
+        "text_secondary": "Марбэйс id",
         "background": "transparent",
         "color": "#64748b",
         "border": "none",
         "hover_color": "#0f172a",
-        "icon": "waysenid-logo (monochrome)"
+        "icon": "Марбэйс id-logo (monochrome)"
       }
     },
     "sizes": {
@@ -49,8 +57,8 @@
     },
     "layout": {
       "display": "inline-flex",
-      "align_items": "center",
-      "gap": "10px",
+      "align_items": "stretch",
+      "columns": ["text_primary+text_secondary", "info_icon"],
       "font_family": "Inter, system-ui, sans-serif",
       "font_weight": 600,
       "cursor": "pointer",
@@ -74,20 +82,20 @@
     },
 
     "steps_popup": [
-      "1. Пользователь нажимает кнопку 'Войти через WaySenID'",
+      "1. Пользователь нажимает кнопку «Единый аккаунт / Марбэйс id»",
       "2. Открывается popup: auth.markbase.ru/oauth/authorize?...",
-      "3. WaySenID показывает Account Picker (если есть сохранённые аккаунты) или форму входа",
+      "3. Марбэйс id показывает Account Picker (если есть сохранённые аккаунты) или форму входа",
       "4. Пользователь входит или выбирает аккаунт",
-      "5. WaySenID показывает экран согласий (Consent Screen) если требуется",
-      "6. WaySenID отправляет postMessage с authorization_code в родительское окно",
+      "5. Марбэйс id показывает экран согласий (Consent Screen) если требуется",
+      "6. Марбэйс id отправляет postMessage с authorization_code в родительское окно",
       "7. Popup закрывается автоматически",
       "8. Клиент обменивает code на access_token через backend"
     ],
 
     "steps_redirect": [
-      "1. Пользователь нажимает кнопку 'Войти через WaySenID'",
+      "1. Пользователь нажимает кнопку «Единый аккаунт / Марбэйс id»",
       "2. Редирект: auth.markbase.ru/oauth/authorize?...",
-      "3. WaySenID показывает Account Picker / форму входа",
+      "3. Марбэйс id показывает Account Picker / форму входа",
       "4. После авторизации — редирект обратно: redirect_uri?code=...&state=...",
       "5. Сервер обменивает code на access_token"
     ]
@@ -128,7 +136,7 @@
   "account_picker": {
     "description": "Экран выбора аккаунта. Показывается когда prompt=select_account или когда у пользователя >1 сохранённого аккаунта.",
     "ui_elements": [
-      "Логотип WaySenID",
+      "Логотип Марбэйс id",
       "Заголовок 'Выберите аккаунт'",
       "Подзаголовок с именем приложения-клиента",
       "Список сохранённых аккаунтов (аватар + имя + email)",
@@ -150,7 +158,7 @@
   "consent_screen": {
     "description": "Экран согласий. Показывается при первом входе в приложение или при запросе новых scopes.",
     "ui_elements": [
-      "Логотип WaySenID",
+      "Логотип Марбэйс id",
       "Информация о приложении-клиенте (название, домен, иконка)",
       "Аватар текущего пользователя",
       "Список запрашиваемых разрешений с иконками",
@@ -168,7 +176,7 @@
   },
 
   "sdk": {
-    "name": "WaySenID JS SDK",
+    "name": "Марбэйс id JS SDK",
     "cdn": "https://auth.markbase.ru/sdk/waysenid.js",
     "npm": "@markbase/waysenid-sdk",
     "init_method": "WaySenID.init({ client_id, redirect_uri, scope })",
@@ -180,7 +188,7 @@
   },
 
   "registration_flow": {
-    "description": "Если у пользователя нет аккаунта WaySenID — регистрация происходит ВНУТРИ auth.markbase.ru, НЕ на стороне клиента.",
+    "description": "Если у пользователя нет аккаунта Марбэйс id — регистрация происходит ВНУТРИ auth.markbase.ru, НЕ на стороне клиента.",
     "steps": [
       "1. Ввод email",
       "2. Проверка уникальности email",
@@ -222,7 +230,7 @@
   },
 
   "one_tap": {
-    "description": "Автоматическое предложение входа — промпт 'Войти как [Имя]' появляется если пользователь уже залогинен в WaySenID",
+    "description": "Автоматическое предложение входа — промпт 'Войти как [Имя]' появляется если пользователь уже залогинен в Марбэйс id",
     "detection_methods": ["iframe_session_probe", "fedcm_api"],
     "prompt_positions": ["top-right", "top-left", "bottom-right", "center", "inline"],
     "auto_select": "Вход без клика если: 1 аккаунт + consent дан + не отклонял ранее",
@@ -232,10 +240,10 @@
   },
 
   "external_providers": {
-    "description": "WaySenID как агрегатор — подключение внешних провайдеров аутентификации",
+    "description": "Марбэйс id как агрегатор — подключение внешних провайдеров аутентификации",
     "supported": ["google", "yandex", "vk", "github", "apple", "telegram", "mailru"],
     "behavior": {
-      "existing_email": "Привязка провайдера к существующему аккаунту WaySenID",
+      "existing_email": "Привязка провайдера к существующему аккаунту Марбэйс id",
       "new_email": "Автоматическое создание аккаунта (email подтверждён провайдером)",
       "different_email": "Подтверждение привязки через UI"
     },
@@ -243,7 +251,7 @@
   },
 
   "connected_apps": {
-    "description": "Пользователь видит все приложения, которым дал доступ через WaySenID",
+    "description": "Пользователь видит все приложения, которым дал доступ через Марбэйс id",
     "features": ["Список приложений с scopes", "Управление разрешениями", "Отзыв доступа", "История входов"],
     "path": "auth.markbase.ru/account/connections",
     "docs": "INTEGRATION.md"
