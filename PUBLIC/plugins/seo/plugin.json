@@ -1,0 +1,95 @@
+{
+  "name": "MarkBase SEO",
+  "slug": "seo",
+  "version": "1.0.0",
+  "description": "Централизованный SEO/AEO: meta, canonical, JSON-LD, robots, sitemap, ai.txt, llms.txt, IndexNow, webmaster. Extend-модель: локальные данные сайта сохраняются, CORE заполняет пробелы.",
+  "author": "MarkBase",
+  "license": "MIT",
+  "homepage": "https://seo.markbase.ru",
+  "api_base": "https://seo.markbase.ru/api/seo/v1",
+  "dashboard_url": "https://seo.markbase.ru/dashboard",
+  "port": 8088,
+  "category": "marketing",
+  "requires": ["registry", "billing"],
+  "provides": [
+    "seo_meta",
+    "aeo",
+    "sitemap",
+    "robots",
+    "json_ld",
+    "og_tags",
+    "ai_txt",
+    "llms_txt",
+    "indexnow",
+    "webmaster_verification",
+    "branding_assets"
+  ],
+  "auth": {
+    "public_resolve": "none",
+    "admin": "uam_session + api_key",
+    "server_sync": "api_key + optional_hmac",
+    "description": "Публичный resolve по project_slug без ключа. Admin и sync — API key из Registry."
+  },
+  "multi_tenant": {
+    "isolation": "company_id + project_slug",
+    "header": "X-Company-Id",
+    "shop_vitrina": "shop.shop_seo_settings per shop_id (отдельный контур SHOP)"
+  },
+  "endpoints": {
+    "health": "GET /api/seo/v1/health",
+    "resolve": "GET /api/seo/v1/public/{project_slug}/resolve?path=",
+    "meta": "GET /api/seo/v1/public/{project_slug}/meta/{page_type}",
+    "robots": "GET /api/seo/v1/public/{project_slug}/robots.txt",
+    "sitemap": "GET /api/seo/v1/public/{project_slug}/sitemap.xml",
+    "ai_txt": "GET /api/seo/v1/public/{project_slug}/ai.txt",
+    "llms_txt": "GET /api/seo/v1/public/{project_slug}/llms.txt",
+    "llm_sitemap": "GET /api/seo/v1/public/{project_slug}/llm-sitemap.xml",
+    "projects_list": "GET /api/seo/v1/projects",
+    "projects_create": "POST /api/seo/v1/projects",
+    "settings_admin": "GET /api/seo/v1/admin/{slug}/settings",
+    "pages_sync": "POST /api/seo/v1/pages/sync"
+  },
+  "platform_proxy": {
+    "description": "На *.markbase.ru публичные файлы и /api/seo/meta/* через markbase-backend + nginx include_seo_public_files_backend.inc",
+    "paths": [
+      "/robots.txt",
+      "/sitemap.xml",
+      "/ai.txt",
+      "/llms.txt",
+      "/favicon.svg",
+      "/site-logo.svg",
+      "/api/seo/meta/{pageType}"
+    ]
+  },
+  "config": {
+    "MARKBASE_SEO_URL": "https://seo.markbase.ru",
+    "MARKBASE_SEO_SLUG": "project slug из dashboard",
+    "MARKBASE_SEO_API_KEY": "REPLACE_WITH_STRONG_48_CHAR_API_KEY",
+    "MARKBASE_COMPANY_ID": "uuid компании",
+    "MARKBASE_SEO_ENABLED": "true",
+    "SEO_HOST_MAP": "host=slug pairs для платформы *.markbase.ru"
+  },
+  "integration": {
+    "headless": {
+      "primary": true,
+      "sdk_path": "Plugins/PUBLIC/markbase-seo-headless/",
+      "docs": "markbase.ru/docs/2026api/SEO/01_EXTERNAL_SITE_HEADLESS_INTEGRATION.md",
+      "merge_policy": "local ?? entity ?? core ?? defaults"
+    },
+    "embed_widget": {
+      "primary": false,
+      "status": "optional_planned"
+    },
+    "third_party": {
+      "nextjs": "resolveSeo.ts + generateMetadata",
+      "php": "markbase_seo_resolve() в docs",
+      "wordpress": "headless theme functions.php + nginx proxy",
+      "static": "CI resolve + nginx proxy robots/sitemap",
+      "any_website": "Registry connect + env + nginx snippet"
+    }
+  },
+  "compatibility": {
+    "platforms": ["javascript", "typescript", "react", "nextjs", "php", "wordpress", "static", "any"],
+    "min_node_version": "18.0.0"
+  }
+}
