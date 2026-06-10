@@ -201,7 +201,7 @@ if ($code !== 200) {
 
 ### 3. Получить ключи (API)
 
-Авторизуйтесь через Марбэйс id, затем:
+Авторизуйтесь через Маркбэйс id, затем:
 
 ```bash
 curl -X POST https://captcha.markbase.ru/api/captcha/v1/projects \
@@ -228,7 +228,7 @@ curl -X POST https://captcha.markbase.ru/api/captcha/v1/projects \
 
 ---
 
-## Интеграция с UAM (Марбэйс id)
+## Интеграция с UAM (Маркбэйс id)
 
 Капча **автоматически подключена** к UAM:
 

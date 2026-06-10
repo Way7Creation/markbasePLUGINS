@@ -27,7 +27,7 @@
     "core": [
       {
         "slug": "uam",
-        "name": "UAM (Марбэйс id)",
+        "name": "UAM (Маркбэйс id)",
         "domain": "auth.markbase.ru",
         "port": 8060,
         "category": "authentication",

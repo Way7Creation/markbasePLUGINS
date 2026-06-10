@@ -24,7 +24,7 @@
     "session_cookie": "uam_session",
     "cookie_domain": ".markbase.ru",
     "hmac_headers": ["X-Api-Key", "X-Timestamp", "X-Signature", "X-Shop-Id"],
-    "description": "Покупатели авторизуются через Марбэйс id (SSO). Межмодульные запросы подписываются HMAC-SHA256."
+    "description": "Покупатели авторизуются через Маркбэйс id (SSO). Межмодульные запросы подписываются HMAC-SHA256."
   },
   "endpoints": {
     "catalog": "GET /api/shop/v1/catalog",

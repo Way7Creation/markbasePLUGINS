@@ -1,9 +1,9 @@
-# Марбэйс id One Tap — Автоматическое предложение входа
+# Маркбэйс id One Tap — Автоматическое предложение входа
 
 > **Версия:** 1.0.0 | Аналог: Google One Tap, Yandex ID Auto
 
-Когда пользователь уже залогинен в Марбэйс id (в любом модуле или сайте экосистемы),
-при посещении стороннего сайта с подключённым Марбэйс id SDK — автоматически появляется
+Когда пользователь уже залогинен в Маркбэйс id (в любом модуле или сайте экосистемы),
+при посещении стороннего сайта с подключённым Маркбэйс id SDK — автоматически появляется
 плавающий промпт **«Войти как Иван Петров»** с аватаром, без нажатия на кнопку.
 
 ---
@@ -12,14 +12,14 @@
 
 ### 1.1 Архитектура (cross-domain session detection)
 
-Поскольку Марбэйс id (`auth.markbase.ru`) и сторонний сайт (`waygpt.ru`) на разных доменах,
+Поскольку Маркбэйс id (`auth.markbase.ru`) и сторонний сайт (`waygpt.ru`) на разных доменах,
 cookie напрямую недоступны. Решение — **hidden iframe + postMessage**:
 
 ```
    waygpt.ru (страница)                          auth.markbase.ru
 ┌────────────────────────────────────┐
 │                                    │
-│  <script> Марбэйс id SDK </script>   │
+│  <script> Маркбэйс id SDK </script>   │
 │       │                            │
 │       ▼                            │
 │  ┌─────────────────────────┐       │       ┌──────────────────────────┐
@@ -50,14 +50,14 @@ cookie напрямую недоступны. Решение — **hidden iframe
 
 ```
 1. Пользователь открывает waygpt.ru
-2. Марбэйс id SDK загружается и создаёт hidden iframe → auth.markbase.ru/sdk/session-probe
+2. Маркбэйс id SDK загружается и создаёт hidden iframe → auth.markbase.ru/sdk/session-probe
 3. iframe читает cookie uam_session на домене auth.markbase.ru
 4. Если сессия активна → iframe отправляет postMessage с данными пользователя
 5. SDK получает данные и проверяет:
    a. Пользователь уже авторизован на waygpt.ru? → НЕ показывать промпт
    b. Пользователь ранее отклонил One Tap? → НЕ показывать (cooldown 24ч)
    c. Consent для waygpt.ru уже дан? → Показать «Войти как»
-   d. Consent не дан? → Показать «Продолжить с Марбэйс id» (потребует consent)
+   d. Consent не дан? → Показать «Продолжить с Маркбэйс id» (потребует consent)
 6. Пользователь нажимает «Продолжить» → silent OAuth flow (prompt=none или consent)
 7. SDK получает code → backend обменивает на token → пользователь авторизован
 ```
@@ -66,7 +66,7 @@ cookie напрямую недоступны. Решение — **hidden iframe
 
 | Условие | Причина |
 |---------|---------|
-| Пользователь не залогинен в Марбэйс id | Нет сессии |
+| Пользователь не залогинен в Маркбэйс id | Нет сессии |
 | Пользователь уже авторизован на этом сайте | Не нужно |
 | Пользователь закрыл промпт (cooldown 24ч) | Не раздражать |
 | `auto_sign_in: false` в настройках SDK | Разработчик отключил |
@@ -92,7 +92,7 @@ cookie напрямую недоступны. Решение — **hidden iframe
 │  │          Продолжить                   │    │
 │  └──────────────────────────────────────┘    │
 │                                              │
-│  🔒 Защищено Марбэйс id                       │
+│  🔒 Защищено Маркбэйс id                       │
 └──────────────────────────────────────────────┘
 ```
 
@@ -271,7 +271,7 @@ cookie напрямую недоступны. Решение — **hidden iframe
 ### 3.1 Инициализация с One Tap
 
 ```javascript
-Марбэйс id.init({
+Маркбэйс id.init({
   client_id: 'wsid_app_waygpt_abc123',
   redirect_uri: 'https://waygpt.ru/auth/callback',
   scope: 'openid profile email',
@@ -317,18 +317,18 @@ cookie напрямую недоступны. Решение — **hidden iframe
 
 ```javascript
 // Показать One Tap вручную
-Марбэйс id.showOneTap();
+Маркбэйс id.showOneTap();
 
 // Скрыть One Tap
-Марбэйс id.hideOneTap();
+Маркбэйс id.hideOneTap();
 
-// Проверить, есть ли активная сессия Марбэйс id (без показа промпта)
-const session = await Марбэйс id.checkSession();
+// Проверить, есть ли активная сессия Маркбэйс id (без показа промпта)
+const session = await Маркбэйс id.checkSession();
 // session = { active: true, user: { name, email, picture } }
 // session = { active: false }
 
 // Проверить, есть ли consent для данного client_id
-const consent = await Марбэйс id.checkConsent();
+const consent = await Маркбэйс id.checkConsent();
 // consent = { granted: true, scopes: ['openid', 'profile', 'email'] }
 // consent = { granted: false }
 ```
@@ -339,7 +339,7 @@ const consent = await Марбэйс id.checkConsent();
 
 | Условие | Описание |
 |---------|----------|
-| 1 активная сессия | Только 1 аккаунт Марбэйс id |
+| 1 активная сессия | Только 1 аккаунт Маркбэйс id |
 | Consent уже дан | Пользователь ранее разрешил этому сайту |
 | Не было отклонений | Пользователь не закрывал промпт ранее |
 | Медиатор разрешает | FedCM API (если поддерживается) |
@@ -446,7 +446,7 @@ if (navigator.credentials && 'IdentityCredential' in window) {
 }
 ```
 
-### 5.4 FedCM endpoints (на стороне Марбэйс id)
+### 5.4 FedCM endpoints (на стороне Маркбэйс id)
 
 ```
 /.well-known/web-identity                → Identity Provider config
@@ -481,7 +481,7 @@ if (navigator.credentials && 'IdentityCredential' in window) {
 
 ## 6. Множественные аккаунты
 
-Если у пользователя несколько аккаунтов Марбэйс id:
+Если у пользователя несколько аккаунтов Маркбэйс id:
 
 ### 6.1 One Tap с выбором
 
@@ -502,7 +502,7 @@ if (navigator.credentials && 'IdentityCredential' in window) {
 │                                              │
 │  + Другой аккаунт                            │
 │                                              │
-│  🔒 Защищено Марбэйс id                       │
+│  🔒 Защищено Маркбэйс id                       │
 └──────────────────────────────────────────────┘
 ```
 
@@ -519,7 +519,7 @@ if (navigator.credentials && 'IdentityCredential' in window) {
 ### 7.1 Сценарий: сайт имеет свою систему регистрации
 
 ```javascript
-Марбэйс id.init({
+Маркбэйс id.init({
   client_id: 'wsid_app_waygpt_abc123',
   // ...
 
@@ -533,7 +533,7 @@ if (navigator.credentials && 'IdentityCredential' in window) {
       const localUser = await checkLocalUser(wsidUser.email);
 
       if (localUser) {
-        // Пользователь уже есть → привязать Марбэйс id и войти
+        // Пользователь уже есть → привязать Маркбэйс id и войти
         await linkWsidAccount(localUser.id, wsidUser.sub);
         loginAs(localUser);
       } else {
@@ -558,11 +558,11 @@ if (navigator.credentials && 'IdentityCredential' in window) {
 Разработчик настраивает поведение при новом пользователе:
 
 ```javascript
-Марбэйс id.init({
+Маркбэйс id.init({
   // ...
   one_tap: {
     new_user_action: 'auto_register',  // или 'confirm' или 'redirect'
-    // 'auto_register' — автоматически создать аккаунт (email уже подтверждён Марбэйс id)
+    // 'auto_register' — автоматически создать аккаунт (email уже подтверждён Маркбэйс id)
     // 'confirm'       — показать промпт «Создать аккаунт на WayGPT?»
     // 'redirect'      — перенаправить на свою страницу регистрации с prefill
   }

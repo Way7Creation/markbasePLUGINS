@@ -1,9 +1,9 @@
-# Марбэйс id — Полное руководство интеграции
+# Маркбэйс id — Полное руководство интеграции
 
 > **Версия:** 2.0.0 | Для разработчиков внешних и внутренних сервисов  
 > **Пример:** Интеграция в WayGPT (waygpt.ru)
 
-Данный документ описывает **полный цикл** подключения авторизации Марбэйс id к вашему сервису — от регистрации приложения до безопасного хранения токенов.
+Данный документ описывает **полный цикл** подключения авторизации Маркбэйс id к вашему сервису — от регистрации приложения до безопасного хранения токенов.
 
 ---
 
@@ -37,7 +37,7 @@
 │  Страница входа:                                              │
 │  ┌─────────────────────┐  ┌──────────────────────────────┐   │
 │  │  Email              │  │                              │   │
-│  │  Пароль             │  │   [🌐 Войти через Марбэйс id]  │   │
+│  │  Пароль             │  │   [🌐 Войти через Маркбэйс id]  │   │
 │  │  [Войти]            │  │                              │   │
 │  └─────────────────────┘  └──────────────────────────────┘   │
 │       Локальный вход            OAuth 2.0 + OIDC              │
@@ -46,7 +46,7 @@
            ▼                             ▼
     Ваша БД (users)           ┌─────────────────────────┐
                               │   auth.markbase.ru       │
-                              │   (Марбэйс id Provider)    │
+                              │   (Маркбэйс id Provider)    │
                               │                          │
                               │  1. Account Picker       │
                               │  2. Вход / Регистрация   │
@@ -62,7 +62,7 @@
 Пользователь           waygpt.ru (Frontend)          waygpt.ru (Backend)          auth.markbase.ru
      │                        │                              │                           │
      │── Клик «Войти через    │                              │                           │
-     │   Марбэйс id»───────────►│                              │                           │
+     │   Маркбэйс id»───────────►│                              │                           │
      │                        │── GET /api/auth/wsid/init ──►│                           │
      │                        │                              │── Генерирует state,       │
      │                        │                              │   code_verifier,          │
@@ -121,7 +121,7 @@
 Пользователь           waygpt.ru (Основное окно)         Popup (auth.markbase.ru)
      │                        │                              │
      │── Клик «Войти через    │                              │
-     │   Марбэйс id»───────────►│                              │
+     │   Маркбэйс id»───────────►│                              │
      │                        │── window.open() ────────────►│
      │                        │   /oauth/authorize?...       │
      │                        │                              │
@@ -144,26 +144,26 @@
 
 ## 2. Сценарии пользователя
 
-### Сценарий A: Пользователь УЖЕ имеет аккаунт Марбэйс id
+### Сценарий A: Пользователь УЖЕ имеет аккаунт Маркбэйс id
 
 ```
-1. Открывает waygpt.ru → Нажимает «Войти через Марбэйс id»
+1. Открывает waygpt.ru → Нажимает «Войти через Маркбэйс id»
 2. Открывается popup/redirect → auth.markbase.ru
-3. Марбэйс id видит активную сессию → показывает Account Picker
+3. Маркбэйс id видит активную сессию → показывает Account Picker
 4. Пользователь выбирает аккаунт
 5. Если первый раз на waygpt.ru → Consent Screen → «Разрешить»
-6. Марбэйс id отдаёт code → waygpt.ru обменивает на token
+6. Маркбэйс id отдаёт code → waygpt.ru обменивает на token
 7. waygpt.ru создаёт локальную сессию → Dashboard
 ```
 
 **Время: ~5 секунд** (если есть сессия и consent уже дан)
 
-### Сценарий B: Пользователь НЕ имеет аккаунта Марбэйс id
+### Сценарий B: Пользователь НЕ имеет аккаунта Маркбэйс id
 
 ```
-1. Открывает waygpt.ru → Нажимает «Войти через Марбэйс id»
+1. Открывает waygpt.ru → Нажимает «Войти через Маркбэйс id»
 2. Открывается popup/redirect → auth.markbase.ru
-3. Марбэйс id видит что нет сессии → Форма входа
+3. Маркбэйс id видит что нет сессии → Форма входа
 4. Пользователь нажимает «Создать аккаунт»
 5. ──── РЕГИСТРАЦИЯ ────
    a. Ввод email
@@ -177,26 +177,26 @@
    b. Вводит код на auth.markbase.ru
    c. Email подтверждён → аккаунт активирован
 7. Consent Screen → «Разрешить» для waygpt.ru
-8. Марбэйс id отдаёт code → waygpt.ru обменивает на token
+8. Маркбэйс id отдаёт code → waygpt.ru обменивает на token
 9. waygpt.ru создаёт локальную сессию → Dashboard
 ```
 
 **Время: ~2-3 минуты** (включая проверку почты)
 
-### Сценарий C: Локальный вход + привязка Марбэйс id позже
+### Сценарий C: Локальный вход + привязка Маркбэйс id позже
 
 ```
 1. Пользователь регистрируется на waygpt.ru через обычную форму
-2. В настройках аккаунта → «Привязать Марбэйс id»
-3. OAuth flow → Марбэйс id создаёт связь (link) с аккаунтом waygpt.ru
-4. Теперь можно входить через «Войти через Марбэйс id»
+2. В настройках аккаунта → «Привязать Маркбэйс id»
+3. OAuth flow → Маркбэйс id создаёт связь (link) с аккаунтом waygpt.ru
+4. Теперь можно входить через «Войти через Маркбэйс id»
 ```
 
 ### Сценарий D: Множественные аккаунты
 
 ```
-1. У пользователя 2 аккаунта Марбэйс id (рабочий + личный)
-2. Нажимает «Войти через Марбэйс id» на waygpt.ru
+1. У пользователя 2 аккаунта Маркбэйс id (рабочий + личный)
+2. Нажимает «Войти через Маркбэйс id» на waygpt.ru
 3. Account Picker показывает оба аккаунта
 4. Выбирает нужный → входит
 5. Может переключить аккаунт через Account Switcher в шапке
@@ -274,27 +274,27 @@ curl -X POST https://registry.markbase.ru/api/registry/v1/oauth/apps \
 
 ```html
 <!-- В <head> -->
-<link rel="stylesheet" href="https://auth.markbase.ru/sdk/Марбэйс id.css">
+<link rel="stylesheet" href="https://auth.markbase.ru/sdk/Маркбэйс id.css">
 
 <!-- Перед </body> -->
-<script src="https://auth.markbase.ru/sdk/Марбэйс id.js"></script>
+<script src="https://auth.markbase.ru/sdk/Маркбэйс id.js"></script>
 ```
 
 ### 4.2 Через npm (React / Vue / Next.js)
 
 ```bash
-npm install @markbase/Марбэйс id-sdk
+npm install @markbase/Маркбэйс id-sdk
 ```
 
 ```javascript
-import Марбэйс id from '@markbase/Марбэйс id-sdk';
-import '@markbase/Марбэйс id-sdk/styles.css';
+import Маркбэйс id from '@markbase/Маркбэйс id-sdk';
+import '@markbase/Маркбэйс id-sdk/styles.css';
 ```
 
 ### 4.3 Инициализация
 
 ```javascript
-Марбэйс id.init({
+Маркбэйс id.init({
   client_id: 'wsid_app_waygpt_abc123',
   redirect_uri: 'https://waygpt.ru/auth/callback',
   scope: 'openid profile email',
@@ -307,10 +307,10 @@ import '@markbase/Марбэйс id-sdk/styles.css';
   
   // Callbacks:
   onReady: () => {
-    console.log('Марбэйс id SDK ready');
+    console.log('Маркбэйс id SDK ready');
   },
   onError: (error) => {
-    console.error('Марбэйс id SDK error:', error);
+    console.error('Маркбэйс id SDK error:', error);
   }
 });
 ```
@@ -330,7 +330,7 @@ import '@markbase/Марбэйс id-sdk/styles.css';
   <title>Вход — WayGPT</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://auth.markbase.ru/sdk/Марбэйс id.css">
+  <link rel="stylesheet" href="https://auth.markbase.ru/sdk/Маркбэйс id.css">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -449,7 +449,7 @@ import '@markbase/Марбэйс id-sdk/styles.css';
       background: linear-gradient(to right, transparent, #e2e5e9, transparent);
     }
 
-    /* ─── Марбэйс id button container ─── */
+    /* ─── Маркбэйс id button container ─── */
     .wsid-container {
       margin-bottom: 8px;
     }
@@ -482,7 +482,7 @@ import '@markbase/Марбэйс id-sdk/styles.css';
       <p>Войдите чтобы продолжить</p>
     </div>
 
-    <!-- ══════ Кнопка Марбэйс id ══════ -->
+    <!-- ══════ Кнопка Маркбэйс id ══════ -->
     <div class="wsid-container" id="wsid-button"></div>
 
     <!-- ══════ Разделитель ══════ -->
@@ -515,21 +515,21 @@ import '@markbase/Марбэйс id-sdk/styles.css';
     <div class="copy">&copy; 2026 WayGPT. Продукт экосистемы markbase.ru</div>
   </div>
 
-  <!-- ══════ Марбэйс id SDK ══════ -->
-  <script src="https://auth.markbase.ru/sdk/Марбэйс id.js"></script>
+  <!-- ══════ Маркбэйс id SDK ══════ -->
+  <script src="https://auth.markbase.ru/sdk/Маркбэйс id.js"></script>
   <script>
-    Марбэйс id.init({
+    Маркбэйс id.init({
       client_id: 'wsid_app_waygpt_abc123',
       redirect_uri: window.location.origin + '/auth/callback',
       scope: 'openid profile email'
     });
 
     // Рендерим кнопку
-    Марбэйс id.renderButton('#wsid-button', {
+    Маркбэйс id.renderButton('#wsid-button', {
       variant: 'outline',  // outline — чтобы отличалась от основной кнопки «Войти»
       size: 'lg',
       width: '100%',
-      text: 'Войти через Марбэйс id'
+      text: 'Войти через Маркбэйс id'
     });
   </script>
 
@@ -542,8 +542,8 @@ import '@markbase/Марбэйс id-sdk/styles.css';
 ```jsx
 // pages/Login.jsx
 import React, { useState, useEffect, useRef } from 'react';
-import Марбэйс id from '@markbase/Марбэйс id-sdk';
-import '@markbase/Марбэйс id-sdk/styles.css';
+import Маркбэйс id from '@markbase/Маркбэйс id-sdk';
+import '@markbase/Маркбэйс id-sdk/styles.css';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -553,8 +553,8 @@ export default function LoginPage() {
   const wsidRef = useRef(null);
 
   useEffect(() => {
-    // Инициализация Марбэйс id SDK
-    Марбэйс id.init({
+    // Инициализация Маркбэйс id SDK
+    Маркбэйс id.init({
       client_id: process.env.REACT_APP_WSID_CLIENT_ID,
       redirect_uri: window.location.origin + '/auth/callback',
       scope: 'openid profile email',
@@ -562,18 +562,18 @@ export default function LoginPage() {
 
     // Рендер кнопки
     if (wsidRef.current) {
-      Марбэйс id.renderButton(wsidRef.current, {
+      Маркбэйс id.renderButton(wsidRef.current, {
         variant: 'outline',
         size: 'lg',
         width: '100%',
-        text: 'Войти через Марбэйс id',
+        text: 'Войти через Маркбэйс id',
         onSuccess: handleWsidSuccess,
         onError: handleWsidError,
       });
     }
   }, []);
 
-  // ── Обработка успешного входа через Марбэйс id ──
+  // ── Обработка успешного входа через Маркбэйс id ──
   const handleWsidSuccess = async (result) => {
     setLoading(true);
     setError('');
@@ -608,7 +608,7 @@ export default function LoginPage() {
       // Пользователь закрыл popup или отклонил
       return;
     }
-    setError('Ошибка Марбэйс id: ' + (err.error_description || err.error));
+    setError('Ошибка Маркбэйс id: ' + (err.error_description || err.error));
   };
 
   // ── Обычный вход по email/паролю ──
@@ -662,7 +662,7 @@ export default function LoginPage() {
           </div>
         )}
 
-        {/* ══ Кнопка Марбэйс id ══ */}
+        {/* ══ Кнопка Маркбэйс id ══ */}
         <div ref={wsidRef} style={{ marginBottom: 8 }} />
 
         {/* ══ Разделитель ══ */}
@@ -780,15 +780,15 @@ router.get('/wsid/init', (req, res) => {
 router.get('/wsid/callback', async (req, res) => {
   const { code, state, error, error_description } = req.query;
 
-  // Проверка ошибок от Марбэйс id
+  // Проверка ошибок от Маркбэйс id
   if (error) {
-    console.error(`Марбэйс id OAuth error: ${error} — ${error_description}`);
+    console.error(`Маркбэйс id OAuth error: ${error} — ${error_description}`);
     return res.redirect(`/login?error=${encodeURIComponent(error_description || error)}`);
   }
 
   // ── CSRF проверка ──
   if (!state || state !== req.session.oauth_state) {
-    console.error('Марбэйс id OAuth: state mismatch (CSRF attack?)');
+    console.error('Маркбэйс id OAuth: state mismatch (CSRF attack?)');
     return res.redirect('/login?error=invalid_state');
   }
 
@@ -831,7 +831,7 @@ router.get('/wsid/callback', async (req, res) => {
       user = await db.users.findOne({ where: { email: wsidUser.email } });
 
       if (user) {
-        // Привязать Марбэйс id к существующему аккаунту
+        // Привязать Маркбэйс id к существующему аккаунту
         await db.users.update(
           { wsid_sub: wsidUser.sub, wsid_linked_at: new Date() },
           { where: { id: user.id } }
@@ -843,8 +843,8 @@ router.get('/wsid/callback', async (req, res) => {
           display_name: wsidUser.name,
           wsid_sub: wsidUser.sub,
           wsid_linked_at: new Date(),
-          email_verified: true, // Марбэйс id уже подтвердил
-          auth_provider: 'Марбэйс id',
+          email_verified: true, // Маркбэйс id уже подтвердил
+          auth_provider: 'Маркбэйс id',
         });
         isNewUser = true;
       }
@@ -853,7 +853,7 @@ router.get('/wsid/callback', async (req, res) => {
     // ── 7. Сохранить refresh_token (зашифрованный) ──
     await db.oauth_tokens.upsert({
       user_id: user.id,
-      provider: 'Марбэйс id',
+      provider: 'Маркбэйс id',
       access_token: encrypt(access_token),
       refresh_token: encrypt(refresh_token),
       expires_at: new Date(Date.now() + tokenResp.data.expires_in * 1000),
@@ -861,7 +861,7 @@ router.get('/wsid/callback', async (req, res) => {
 
     // ── 8. Создать сессию ──
     req.session.user_id = user.id;
-    req.session.auth_provider = 'Марбэйс id';
+    req.session.auth_provider = 'Маркбэйс id';
 
     // Очистить OAuth-данные из сессии
     delete req.session.oauth_state;
@@ -873,7 +873,7 @@ router.get('/wsid/callback', async (req, res) => {
     res.redirect(isNewUser ? '/onboarding' : returnUrl);
 
   } catch (err) {
-    console.error('Марбэйс id callback error:', err.response?.data || err.message);
+    console.error('Маркбэйс id callback error:', err.response?.data || err.message);
     res.redirect('/login?error=auth_failed');
   }
 });
@@ -905,10 +905,10 @@ router.post('/wsid/callback', async (req, res) => {
 // ── 4. Выход ──
 router.post('/wsid/logout', async (req, res) => {
   if (req.session.user_id) {
-    // Опционально: отозвать токен у Марбэйс id
+    // Опционально: отозвать токен у Маркбэйс id
     try {
       const tokens = await db.oauth_tokens.findOne({
-        where: { user_id: req.session.user_id, provider: 'Марбэйс id' }
+        where: { user_id: req.session.user_id, provider: 'Маркбэйс id' }
       });
       if (tokens) {
         await axios.post('https://auth.markbase.ru/oauth/revoke', new URLSearchParams({
@@ -931,7 +931,7 @@ module.exports = router;
 ### 6.2 Python / FastAPI
 
 ```python
-# auth/Марбэйс id.py
+# auth/Маркбэйс id.py
 import os
 import secrets
 import hashlib
@@ -990,7 +990,7 @@ async def wsid_init(request: Request, return_url: str = "/dashboard"):
 @router.get("/callback")
 async def wsid_callback(request: Request, code: str = "", state: str = "",
                          error: str = "", error_description: str = ""):
-    """Обработка callback от Марбэйс id."""
+    """Обработка callback от Маркбэйс id."""
     if error:
         return RedirectResponse(f"/login?error={error_description or error}")
 
@@ -1042,16 +1042,16 @@ async def wsid_callback(request: Request, code: str = "", state: str = "",
                 display_name=wsid_user.get("name"),
                 wsid_sub=wsid_user["sub"],
                 email_verified=True,
-                auth_provider="Марбэйс id",
+                auth_provider="Маркбэйс id",
             )
             is_new = True
 
     # ── Сохранить токены ──
-    await save_oauth_tokens(user["id"], "Марбэйс id", tokens)
+    await save_oauth_tokens(user["id"], "Маркбэйс id", tokens)
 
     # ── Создать сессию ──
     request.session["user_id"] = user["id"]
-    request.session["auth_provider"] = "Марбэйс id"
+    request.session["auth_provider"] = "Маркбэйс id"
 
     return RedirectResponse("/onboarding" if is_new else return_url)
 ```
@@ -1067,7 +1067,7 @@ async def wsid_callback(request: Request, code: str = "", state: str = "",
 ALTER TABLE users ADD COLUMN wsid_sub VARCHAR(64) UNIQUE;
 ALTER TABLE users ADD COLUMN wsid_linked_at TIMESTAMPTZ;
 ALTER TABLE users ADD COLUMN auth_provider VARCHAR(20) DEFAULT 'local';
--- auth_provider: 'local' | 'Марбэйс id' | 'both'
+-- auth_provider: 'local' | 'Маркбэйс id' | 'both'
 
 CREATE INDEX idx_users_wsid_sub ON users(wsid_sub);
 
@@ -1075,7 +1075,7 @@ CREATE INDEX idx_users_wsid_sub ON users(wsid_sub);
 CREATE TABLE oauth_tokens (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-  provider VARCHAR(20) NOT NULL DEFAULT 'Марбэйс id',
+  provider VARCHAR(20) NOT NULL DEFAULT 'Маркбэйс id',
   access_token TEXT NOT NULL,        -- зашифрованный!
   refresh_token TEXT,                -- зашифрованный!
   id_token TEXT,
@@ -1118,7 +1118,7 @@ function decrypt(text) {
 ```javascript
 async function refreshAccessToken(userId) {
   const tokens = await db.oauth_tokens.findOne({
-    where: { user_id: userId, provider: 'Марбэйс id' }
+    where: { user_id: userId, provider: 'Маркбэйс id' }
   });
 
   if (!tokens || !tokens.refresh_token) {
@@ -1151,9 +1151,9 @@ async function refreshAccessToken(userId) {
 
 ## 8. Регистрация нового пользователя
 
-### 8.1 Полный flow регистрации через Марбэйс id
+### 8.1 Полный flow регистрации через Маркбэйс id
 
-Когда пользователь нажимает «Войти через Марбэйс id» и у него **нет аккаунта**:
+Когда пользователь нажимает «Войти через Маркбэйс id» и у него **нет аккаунта**:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
@@ -1163,7 +1163,7 @@ async function refreshAccessToken(userId) {
 │  │           ┌─────┐                                              │  │
 │  │           │ 🌐  │                                              │  │
 │  │           └─────┘                                              │  │
-│  │          Марбэйс id                                              │  │
+│  │          Маркбэйс id                                              │  │
 │  │                                                                │  │
 │  │   ┌──────────────────────────────────────────────────────┐     │  │
 │  │   │  Email                                               │     │  │
@@ -1180,7 +1180,7 @@ async function refreshAccessToken(userId) {
 │                              ▼  (email не найден)                    │
 │                                                                      │
 │  ┌────────────────────────────────────────────────────────────────┐  │
-│  │          Марбэйс id — Регистрация                                │  │
+│  │          Маркбэйс id — Регистрация                                │  │
 │  │                                                                │  │
 │  │   Email: newuser@example.com                                   │  │
 │  │                                                                │  │
@@ -1205,7 +1205,7 @@ async function refreshAccessToken(userId) {
 │                              ▼  (аккаунт создан, НО не активен)      │
 │                                                                      │
 │  ┌────────────────────────────────────────────────────────────────┐  │
-│  │          Марбэйс id — Подтверждение email                         │  │
+│  │          Маркбэйс id — Подтверждение email                         │  │
 │  │                                                                │  │
 │  │          ┌─────┐                                               │  │
 │  │          │ ✉️   │                                               │  │
@@ -1238,14 +1238,14 @@ async function refreshAccessToken(userId) {
 
 ### 8.2 Что ВАЖНО для разработчика вашего сервиса
 
-1. **Вам НЕ нужно** реализовывать регистрацию — Марбэйс id делает это сам
-2. **Вам НЕ нужно** подтверждать email — Марбэйс id гарантирует `email_verified: true`
-3. **Вам НЕ нужно** хранить пароли Марбэйс id-пользователей
+1. **Вам НЕ нужно** реализовывать регистрацию — Маркбэйс id делает это сам
+2. **Вам НЕ нужно** подтверждать email — Маркбэйс id гарантирует `email_verified: true`
+3. **Вам НЕ нужно** хранить пароли Маркбэйс id-пользователей
 4. **Вам НУЖНО** обработать callback и создать пользователя в своей БД
 5. **Вам НУЖНО** проверять `email_verified` в ответе `/oauth/userinfo`
 6. **Вам НУЖНО** отличать «новых» пользователей от «повторных» (для onboarding)
 
-### 8.3 Гарантии Марбэйс id при регистрации
+### 8.3 Гарантии Маркбэйс id при регистрации
 
 | Гарантия | Описание |
 |----------|----------|
@@ -1290,7 +1290,7 @@ waygpt/
 ### 9.2 Файл .env.example
 
 ```env
-# ── Марбэйс id OAuth ──
+# ── Маркбэйс id OAuth ──
 WSID_CLIENT_ID=wsid_app_waygpt_abc123
 WSID_CLIENT_SECRET=wsid_secret_xxxxxxxxxxxxxxxxxxx
 WSID_REDIRECT_URI=https://waygpt.ru/auth/wsid/callback
@@ -1398,23 +1398,23 @@ services:
 
 SDK определяет закрытие popup и вызывает `onError({ error: 'popup_closed' })`. Ваш сайт просто остаётся на странице входа. Ничего не происходит.
 
-### Q: Что если Марбэйс id недоступен?
+### Q: Что если Маркбэйс id недоступен?
 
 SDK показывает ошибку `temporarily_unavailable`. Ваш сайт должен:
 1. Показать сообщение «Сервис авторизации временно недоступен»
 2. Предложить альтернативный вход (email/пароль если есть)
 3. Попробовать через 30 секунд
 
-### Q: Можно ли использовать одновременно локальный вход и Марбэйс id?
+### Q: Можно ли использовать одновременно локальный вход и Маркбэйс id?
 
 Да. Рекомендуемый подход:
-- На странице входа: обычная форма + кнопка «Войти через Марбэйс id»
-- В настройках: возможность привязать/отвязать Марбэйс id
+- На странице входа: обычная форма + кнопка «Войти через Маркбэйс id»
+- В настройках: возможность привязать/отвязать Маркбэйс id
 - В БД: поле `wsid_sub` (nullable) + обычные email/password
 
-### Q: Что если email из Марбэйс id уже есть в моей БД?
+### Q: Что если email из Маркбэйс id уже есть в моей БД?
 
-При первом входе через Марбэйс id: если email совпадает с существующим пользователем — **привязать** Марбэйс id к этому аккаунту (не создавать дубликат). Проверьте `email_verified: true`.
+При первом входе через Маркбэйс id: если email совпадает с существующим пользователем — **привязать** Маркбэйс id к этому аккаунту (не создавать дубликат). Проверьте `email_verified: true`.
 
 ### Q: Как отлаживать локально?
 
@@ -1424,7 +1424,7 @@ SDK показывает ошибку `temporarily_unavailable`. Ваш сайт
 
 ### Q: Как обновить scopes после первого входа?
 
-Добавьте новый scope в запрос `/oauth/authorize`. Марбэйс id автоматически покажет Consent Screen с новыми разрешениями.
+Добавьте новый scope в запрос `/oauth/authorize`. Маркбэйс id автоматически покажет Consent Screen с новыми разрешениями.
 
 ---
 

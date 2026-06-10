@@ -1,4 +1,4 @@
-# Plugin: UAM (Марбэйс id) — Единая аутентификация
+# Plugin: UAM (Маркбэйс id) — Единая аутентификация
 
 > **Версия:** 1.5.0
 > **Slug:** `uam`
@@ -9,7 +9,7 @@
 
 ## Обзор
 
-UAM (Марбэйс id) — централизованный сервис аутентификации платформы MarkBase. Все модули и сторонние проекты используют единый вход через UAM.
+UAM (Маркбэйс id) — централизованный сервис аутентификации платформы MarkBase. Все модули и сторонние проекты используют единый вход через UAM.
 
 **Принцип:** пользователь регистрируется и входит **один раз** через auth.markbase.ru. Cookie `uam_session` действует на всех поддоменах `.markbase.ru`. Сторонние проекты валидируют сессию через API.
 
@@ -68,9 +68,9 @@ UAM (Марбэйс id) — централизованный сервис аут
 
 ### Проекты с собственной регистрацией («Войти как»)
 
-Если у вас **своя форма входа/регистрации** и вы хотите добавить Марбэйс id как ещё один способ (аналогично «Войти через Google» / «Яндекс»): одна кнопка «Войти через Марбэйс id», без дублирования форм и капчи. Данные пользователя передаются через cookie (на \*.markbase.ru) или через одноразовый `wsid_code` + `POST /exchange-code` (на стороннем домене).
+Если у вас **своя форма входа/регистрации** и вы хотите добавить Маркбэйс id как ещё один способ (аналогично «Войти через Google» / «Яндекс»): одна кнопка «Войти через Маркбэйс id», без дублирования форм и капчи. Данные пользователя передаются через cookie (на \*.markbase.ru) или через одноразовый `wsid_code` + `POST /exchange-code` (на стороннем домене).
 
-→ **[Марбэйс id_LOGIN_AS.md](../../Марбэйс id_LOGIN_AS.md)** — пошаговое подключение, два варианта (тот же домен / сторонний домен), формат данных, чеклист.
+→ **[Маркбэйс id_LOGIN_AS.md](../../Маркбэйс id_LOGIN_AS.md)** — пошаговое подключение, два варианта (тот же домен / сторонний домен), формат данных, чеклист.
 
 ---
 
@@ -398,7 +398,7 @@ Content-Type: application/json
 
 ### Запоминание аккаунтов
 
-Марбэйс id автоматически запоминает аккаунты, с которых пользователь входил, в `localStorage` браузера:
+Маркбэйс id автоматически запоминает аккаунты, с которых пользователь входил, в `localStorage` браузера:
 
 | Ключ | Описание |
 |------|----------|
@@ -573,7 +573,7 @@ Content-Type: application/json
 
 ```javascript
 /* ═══════════════════════════════════════════════════════
- * Марбэйс id Account Helpers
+ * Маркбэйс id Account Helpers
  * Используйте в ЛЮБОМ модуле для работы с сохранёнными аккаунтами.
  * Эти функции совместимы с Login.js и Layout.js auth.markbase.ru.
  * ═══════════════════════════════════════════════════════ */
@@ -863,8 +863,8 @@ function AccountSwitcher({ user, onLogout, returnUrl }) {
 
 ```
 ┌──────────────────────────────────────────┐
-│           [🔶 Марбэйс id Logo]             │
-│              Марбэйс id                    │
+│           [🔶 Маркбэйс id Logo]             │
+│              Маркбэйс id                    │
 │          Выберите аккаунт                │
 │                                          │
 │  ┌────────────────────────────────────┐  │
@@ -888,7 +888,7 @@ function AccountSwitcher({ user, onLogout, returnUrl }) {
 │  ✅ 7/7 модулей защиты активны           │
 │  🔒 HTTPS  🛡 Anti-Bruteforce  ⚡ Anti-DDoS │
 │                                          │
-│     Марбэйс id v1.4 · MarkBase · 2026     │
+│     Маркбэйс id v1.4 · MarkBase · 2026     │
 └──────────────────────────────────────────┘
 ```
 
@@ -1045,7 +1045,7 @@ function AccountSwitcher({ user, onLogout, returnUrl }) {
 ```json
 {
   "status": "ok",
-  "service": "Марбэйс id-uam",
+  "service": "Маркбэйс id-uam",
   "version": "1.3.0",
   "timestamp": "2026-02-08T12:00:00Z",
   "postgres": true,
@@ -1190,7 +1190,7 @@ img-src 'self' data:;
 **2.1. Добавьте кнопки входа/регистрации:**
 ```html
 <a href="https://auth.markbase.ru/login?return_url=https://yoursite.com/dashboard">
-  Единый аккаунт — Марбэйс id
+  Единый аккаунт — Маркбэйс id
 </a>
 <a href="https://auth.markbase.ru/register?return_url=https://yoursite.com/dashboard">
   Зарегистрироваться
@@ -1301,7 +1301,7 @@ function AuthButtons() {
   return (
     <div>
       <a href={`${UAM_URL}/login?return_url=${returnUrl}`}>
-        Единый аккаунт — Марбэйс id
+        Единый аккаунт — Маркбэйс id
       </a>
       <a href={`${UAM_URL}/register?return_url=${returnUrl}`}>
         Зарегистрироваться
@@ -1686,7 +1686,7 @@ if ($user) {
 ```php
 <?php
 /**
- * Plugin Name: MarkBase Auth (Марбэйс id)
+ * Plugin Name: MarkBase Auth (Маркбэйс id)
  * Description: Единая аутентификация через MarkBase UAM с отказоустойчивым кэшем
  * Version: 1.2.0
  * Author: MarkBase
@@ -1812,7 +1812,7 @@ function mb_auth_map_role($uam_role) {
 
 // === Кнопки входа и регистрации (шорткоды) ===
 add_shortcode('markbase_login', function($atts) {
-    $atts = shortcode_atts(['text' => 'Единый аккаунт — Марбэйс id'], $atts);
+    $atts = shortcode_atts(['text' => 'Единый аккаунт — Маркбэйс id'], $atts);
     $return_url = urlencode(home_url($_SERVER['REQUEST_URI']));
     return '<a href="' . MB_UAM_URL . '/login?return_url=' . $return_url
          . '" class="markbase-login-btn">' . esc_html($atts['text']) . '</a>';
@@ -1849,7 +1849,7 @@ add_action('admin_menu', function() {
     add_options_page('MarkBase Auth', 'MarkBase Auth', 'manage_options', 'markbase-auth', function() {
         $user = mb_auth_validate_session();
         echo '<div class="wrap">';
-        echo '<h1>MarkBase Auth (Марбэйс id)</h1>';
+        echo '<h1>MarkBase Auth (Маркбэйс id)</h1>';
         echo '<table class="form-table">';
         echo '<tr><th>UAM URL</th><td>' . MB_UAM_URL . '</td></tr>';
         echo '<tr><th>Cookie</th><td>' . MB_UAM_COOKIE . '</td></tr>';
