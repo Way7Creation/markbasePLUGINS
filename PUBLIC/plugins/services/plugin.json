@@ -1,0 +1,95 @@
+{
+  "name": "MarkBase Services",
+  "slug": "services",
+  "version": "1.0.0",
+  "description": "Маркетплейс специалистов и запись на услуги: календарь, групповые занятия, пробные слоты, visit packs, CRM-синхронизация клиентов, embed-виджеты для внешних сайтов и SHOP-витрин.",
+  "author": "MarkBase",
+  "license": "MIT",
+  "homepage": "https://services.markbase.ru",
+  "api_base": "https://services.markbase.ru/api/services/v1",
+  "port": 8055,
+  "category": "business",
+  "requires": ["uam", "registry", "billing"],
+  "provides": [
+    "specialist_catalog",
+    "booking_calendar",
+    "group_class_sessions",
+    "visit_packs",
+    "embed_widgets",
+    "shop_bridge",
+    "crm_client_sync"
+  ],
+  "multi_tenant": {
+    "isolation": "company_id",
+    "description": "Данные изолированы по company_id (tenant). Витрина SHOP связывается через shop_id в виджетах и class_sessions.",
+    "header": "X-Company-Id",
+    "enforcement": "auth.middleware requireCompany; публичные widget-маршруты резолвят company_id из embed token.",
+    "api_keys_per_company": true
+  },
+  "auth": {
+    "type": "uam_session + hmac",
+    "session_cookie": "uam_session",
+    "cookie_domain": ".markbase.ru",
+    "hmac_headers": ["X-Api-Key", "X-Timestamp", "X-Signature", "X-Company-Id"],
+    "description": "Операторские SPA-запросы — uam_session SSO. Межмодульный SHOP bridge — HMAC + shop_id. Публичный embed — widget token + allowed_origins."
+  },
+  "endpoints": {
+    "specialists_list": "GET /api/services/v1/specialists",
+    "specialist_get": "GET /api/services/v1/specialists/:id",
+    "widget_config": "GET /api/services/v1/widget/:token",
+    "widget_class_sessions": "GET /api/services/v1/widget/:token/class-sessions",
+    "widget_enroll": "POST /api/services/v1/widget/:token/enroll",
+    "availability": "GET /api/services/v1/specialists/:id/schedules/:scheduleId/availability",
+    "book": "POST /api/services/v1/specialists/:id/book",
+    "my_bookings_client": "GET /api/services/v1/my/bookings/client",
+    "my_bookings_specialist": "GET /api/services/v1/my/bookings/specialist",
+    "class_sessions_company": "GET /api/services/v1/company/class-sessions",
+    "health": "GET /api/services/v1/health",
+    "ready": "GET /api/services/v1/ready",
+    "info": "GET /api/services/v1/info"
+  },
+  "admin_endpoints": {
+    "base": "/api/services/v1/company",
+    "description": "Расписание, bookable_services, class_sessions, widgets (Widget Studio), visit packs — в SPA services.markbase.ru и hub app.markbase.ru/modules/services"
+  },
+  "embed": {
+    "spa_base": "https://services.markbase.ru/widget",
+    "widget_types": ["specialist_slots", "group_classes", "trial"],
+    "loader": "iframe SPA route /widget/:token (React embed shell)",
+    "studio": "https://app.markbase.ru → Услуги / Widget Studio (ScheduleManagerWidget WidgetsTab)",
+    "cors": "allowed_origins per widget token (Widget Studio); frame-ancestors CSP on services.markbase.ru",
+    "powered_by": "ServicesPoweredByFooter — «Запись — на платформе Markbase»"
+  },
+  "integrations": {
+    "shop": "GroupClassGrid, SHOP bridge enroll, shop_id на booking/class_session",
+    "crm": "ensureCrmClientFromShopBridge при widget enroll",
+    "uam": "client_user_id для авторизованных броней",
+    "billing": "enabled-module middleware; без active billing_modules → 402 MODULE_DISABLED"
+  },
+  "database": {
+    "name": "services_db",
+    "schema": "svc",
+    "tables": [
+      "specialists",
+      "schedules",
+      "bookable_services",
+      "bookings",
+      "class_sessions",
+      "class_session_enrollments",
+      "embed_widgets",
+      "visit_pack_templates"
+    ],
+    "isolation_indexes": "company_id на tenant-таблицах"
+  },
+  "config": {
+    "SERVICES_URL": "https://services.markbase.ru",
+    "SERVICES_API_BASE": "https://services.markbase.ru/api/services/v1",
+    "SERVICES_PORT": 8055,
+    "SERVICES_API_KEY": "Выдаётся через Registry",
+    "SERVICES_HMAC_SECRET": "Выдаётся через Registry"
+  },
+  "compatibility": {
+    "platforms": ["javascript", "iframe", "nextjs", "wordpress", "any"],
+    "min_version": "1.0.0"
+  }
+}

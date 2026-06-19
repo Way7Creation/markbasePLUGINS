@@ -29,6 +29,7 @@
 | [HRM](./hrm/) | 2.0.0 | `hrm` | 8068 | `hrm.markbase.ru` | Управление сотрудниками, отделами, должностями |
 | [Orders](./orders/) | 1.0.0 | `orders` | 8085 | `orders.markbase.ru` | Закупки у поставщиков (RS24, ETM), спецификации |
 | [Shop](./shop/) | 1.1.0 | `shop` | 8020 | `shop.markbase.ru` | Интернет-магазин: каталог, корзина, B2B/B2C чекаут, AI-поиск |
+| [Services](./services/) | 1.0.0 | `services` | 8055 | `services.markbase.ru` | Запись на услуги, групповые занятия, embed-виджеты, CRM sync |
 | [Bonus](./bonus/) | 1.0.0 | `bonus` | 8100 | `bonus.markbase.ru` | Бонусы и акции: начисления, списания, возвраты, кампании, checkout quote/hold/commit |
 
 ### Файлы и хранение
